@@ -32,8 +32,7 @@ proguard/
 captures/
 
 # Android Studio workspace files
-/.idea/workspace.xml
-/.idea/libraries
+/.idea/
 
 # OSX files
 .DS_STORE
