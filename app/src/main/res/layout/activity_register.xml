@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="roboniania.com.roboniania_android.LoginActivity"
+    tools:context="roboniania.com.roboniania_android.RegisterActivity"
     android:orientation="vertical">
 
     <ImageView
@@ -19,14 +19,14 @@
 
     <!-- Email Label -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_email"
+        android:id="@+id/input_layout_email_register"
         android:layout_marginTop="20dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <EditText
-            android:id="@+id/input_email"
+            android:id="@+id/input_email_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -36,13 +36,13 @@
 
     <!-- Password Label -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_password"
+        android:id="@+id/input_layout_password_register"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <EditText
-            android:id="@+id/input_password"
+            android:id="@+id/input_password_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -50,22 +50,38 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <!-- Confirm Password Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_password_confirm"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <EditText
+            android:id="@+id/input_password_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="confirm password"/>
+
+    </android.support.design.widget.TextInputLayout>
+
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/register_button"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         android:padding="12dp"
-        android:text="Login"/>
+        android:text="Create account"/>
 
 
-    <TextView android:id="@+id/signup_link"
+    <TextView android:id="@+id/login_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="@string/no_account"
+        android:text="@string/already_member"
         android:gravity="center"
         android:textSize="16sp"/>
 
