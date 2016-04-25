@@ -25,6 +25,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 
+    //Gson
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
 
     //Network
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
