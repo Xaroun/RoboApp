@@ -12,7 +12,7 @@
 
     <ImageView
         android:src="@drawable/robo"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
@@ -20,8 +20,8 @@
     <!-- Email Label -->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_email_register"
-        android:layout_marginTop="20dp"
-        android:layout_width="300dp"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -37,7 +37,7 @@
     <!-- Password Label -->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_password_register"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -53,7 +53,7 @@
     <!-- Confirm Password Label -->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_password_confirm"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -68,7 +68,7 @@
 
     <Button
         android:id="@+id/register_button"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dp"
