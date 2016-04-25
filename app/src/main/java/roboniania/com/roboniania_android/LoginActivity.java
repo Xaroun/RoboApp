@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import retrofit2.Retrofit;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
@@ -64,6 +66,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void startRegisterActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivityForResult(intent, REGISTER_REQUEST);
+    }
+
+    private void login() {
+//        Retrofit retrofit = new Retrofit().Builder.
     }
 
 }
