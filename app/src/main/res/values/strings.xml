@@ -3,4 +3,5 @@
     <string name="no_account">No account yet? Create one</string>
     <string name="already_member">Already a member? Login </string>
     <string name="account_created">You have successfully created an account</string>
+    <string name="wrong_credentials">Your email or password is invalid</string>
 </resources>

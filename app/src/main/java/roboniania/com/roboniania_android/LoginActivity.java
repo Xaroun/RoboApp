@@ -1,6 +1,7 @@
 package roboniania.com.roboniania_android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,23 +28,29 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "localhost";
+    private final String url = "http://192.168.2.3:8080";
     private SharedPreferenceStorage userLocalStorage;
+    private Context context;
+
 
     Button loginBtn;
     TextView signupLink;
+    EditText emailText, passwordText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        context = getApplicationContext();
         //Initialize components
         loginBtn = (Button) findViewById(R.id.login_button);
         loginBtn.setOnClickListener(this);
 
         signupLink = (TextView) findViewById(R.id.signup_link);
         signupLink.setOnClickListener(this);
+
+        emailText = (EditText) findViewById(R.id.input_email);
+        passwordText = (EditText) findViewById(R.id.input_password);
 
         userLocalStorage = new SharedPreferenceStorage(this);
     }
@@ -51,8 +59,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.login_button:
-                login();
-                sendResultForMainActivity();
+                String email = emailText.getText().toString();
+                String password = passwordText.getText().toString();
+                login(email, password);
                 break;
             case R.id.signup_link:
                 startRegisterActivity();
@@ -84,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivityForResult(intent, REGISTER_REQUEST);
     }
 
-    private void login() {
+    private void login(String email, String password) {
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -96,8 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         RoboService roboService = retrofit.create(RoboService.class);
 
 
-
-        Call<OAuthToken> call = roboService.getToken("janusz", "1234");
+        Call<OAuthToken> call = roboService.getToken(email, password);
 
         call.enqueue(new Callback<OAuthToken>() {
             @Override
@@ -115,14 +123,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     System.out.println(statusCode);
                     System.out.println(accessToken.getAccess_token());
-
+                    sendResultForMainActivity();
 //                    finish(); // Finish Activity
 
                 } else {
 //                    Snackbar snackbar = Snackbar
 //                            .make(coordinatorLayout, "Blad logowania!", Snackbar.LENGTH_LONG);
 //                    snackbar.show();
-                    System.out.println("HIUSTON MAMY PROBLEM");
+                    Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
+                    System.out.println("invalid email or password");
                     //TODO catch code error
                 }
             }
