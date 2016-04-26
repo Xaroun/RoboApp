@@ -28,7 +28,7 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "http://150.254.79.105:8080";
+    private final String url = "http://192.168.2.4:8080";
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
 
@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button loginBtn;
     TextView signupLink;
     EditText emailText, passwordText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +126,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     System.out.println(statusCode);
                     System.out.println(accessToken.getAccess_token());
                     sendResultForMainActivity();
-                    finish(); // Finish Activity
+                    finish();
 
                 } else {
-//                    Snackbar snackbar = Snackbar
-//                            .make(coordinatorLayout, "Blad logowania!", Snackbar.LENGTH_LONG);
-//                    snackbar.show();
                     Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
                     System.out.println("invalid email or password");
                     //TODO catch code error
@@ -139,9 +137,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(Call<OAuthToken> call, Throwable t) {
-//                Snackbar snackbar = Snackbar
-//                        .make(coordinatorLayout, "Problem z nawiazaniem polaczenia.", Snackbar.LENGTH_LONG);
-//                snackbar.show();
                 t.printStackTrace();
             }
 

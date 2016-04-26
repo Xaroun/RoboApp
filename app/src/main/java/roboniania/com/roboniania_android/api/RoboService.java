@@ -8,13 +8,18 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
+import roboniania.com.roboniania_android.api.model.Robot;
 
 /**
  * Created by s396348 on 2016-04-25.
  */
 public interface RoboService {
 
-    @GET("oauth2/token")
+    @GET("/oauth2/token")
     Call<OAuthToken> getToken(@Header("Login") String login,
                               @Header("Password") String password);
+
+    @GET("/robots")
+    Call<Robot> getRobot(@Header("Pair-Key") String pairKey,
+                              @Header("Token") String oauthToken);
 }
