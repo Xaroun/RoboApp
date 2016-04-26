@@ -28,7 +28,7 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "http://192.168.2.3:8080";
+    private final String url = "http://150.254.79.105:8080";
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
 
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = getApplicationContext();
+
         //Initialize components
         loginBtn = (Button) findViewById(R.id.login_button);
         loginBtn.setOnClickListener(this);
@@ -124,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     System.out.println(statusCode);
                     System.out.println(accessToken.getAccess_token());
                     sendResultForMainActivity();
-//                    finish(); // Finish Activity
+                    finish(); // Finish Activity
 
                 } else {
 //                    Snackbar snackbar = Snackbar

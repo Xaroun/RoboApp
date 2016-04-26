@@ -5,14 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOGIN_REQUEST = 1;
+    private SharedPreferenceStorage userLocalStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userLocalStorage = new SharedPreferenceStorage(this);
 
         if (isAuthenticated()) {
             startHomeActivity();
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isAuthenticated() {
-        return false;
+        return userLocalStorage.getUserLoggedIn();
     }
 
     private void startHomeActivity() {
