@@ -1,14 +1,18 @@
-package roboniania.com.roboniania_android;
+package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -19,16 +23,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Context context;
     private SharedPreferenceStorage userLocalStorage;
-    private final String url = "http://192.168.2.4:8080";
-    private boolean paired = false;
+    private final String url = "http://192.168.2.3:8080";
+    private ImageView avatar, games, edu;
+    private TextView hello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,48 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         context = getApplicationContext();
         userLocalStorage = new SharedPreferenceStorage(this);
+
+        hello = (TextView) findViewById(R.id.hello);
+//        hello.setText("Hello " + getIntent().getExtras().getString("EMAIL"));
+
+        avatar = (ImageView) findViewById(R.id.avatar);
+        avatar.setOnClickListener(this);
+
+        games = (ImageView) findViewById(R.id.games);
+        games.setOnClickListener(this);
+
+        edu = (ImageView) findViewById(R.id.edu);
+        edu.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.avatar:
+                startAccountActivity();
+                break;
+            case R.id.games:
+                startGamesActivity();
+                break;
+            case R.id.edu:
+                startEduActivity();
+                break;
+        }
+    }
+
+    private void startEduActivity() {
+        System.out.println("AAAAAA");
+    }
+
+    private void startGamesActivity() {
+        Intent intent = new Intent(this, GameListActivity.class);
+        startActivity(intent);
+    }
+
+    private void startAccountActivity() {
+        System.out.println("CCCCCC");
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,8 +97,6 @@ public class HomeActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.add:
                 showPairDialog();
-                if(paired)
-                    item.setVisible(false);
                 return true;
         }
 
@@ -75,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
 
         alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                paired = false;
+
             }
         });
 
@@ -108,12 +153,10 @@ public class HomeActivity extends AppCompatActivity {
                     System.out.println(robot.getSn());
                     System.out.println(robot.getUuid());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-                    paired = true;
 //                    finish();
 
                 } else {
                     Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
-                    paired = false;
                     System.out.println("pair-key and token doesn't match");
                     //TODO catch code error
                 }
@@ -122,11 +165,11 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Robot> call, Throwable t) {
-                paired = false;
                 t.printStackTrace();
             }
 
         });
 
         }
-    }
+
+}

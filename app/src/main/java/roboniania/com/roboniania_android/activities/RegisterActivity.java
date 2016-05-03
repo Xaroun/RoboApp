@@ -1,4 +1,4 @@
-package roboniania.com.roboniania_android;
+package roboniania.com.roboniania_android.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import roboniania.com.roboniania_android.R;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 

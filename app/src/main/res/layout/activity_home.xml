@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,16 +7,52 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="roboniania.com.roboniania_android.HomeActivity">
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
-        android:textSize="30sp"
-        android:textColor="#700"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:text="Welcome home."/>
+    android:orientation="vertical"
+    tools:context=".activities.HomeActivity">
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/avatar"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="25sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:text="Blank"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:gravity="bottom">
+
+        <ImageView
+            android:id="@+id/games"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/games_label"
+            android:clickable="true"
+            />
+
+        <ImageView
+            android:id="@+id/edu"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:clickable="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/edu_label"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,9 +1,8 @@
-package roboniania.com.roboniania_android;
+package roboniania.com.roboniania_android.activities;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
@@ -28,14 +28,14 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "http://192.168.2.4:8080";
+    private final String url = "http://192.168.2.3:8080";
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
 
 
-    Button loginBtn;
-    TextView signupLink;
-    EditText emailText, passwordText;
+    private Button loginBtn;
+    private TextView signupLink;
+    private EditText emailText, passwordText;
 
 
     @Override
