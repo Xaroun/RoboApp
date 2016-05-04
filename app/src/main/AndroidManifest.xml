@@ -10,20 +10,37 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity
+            android:name=".activities.MainActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.HomeActivity" />
-        <activity android:name=".activities.RegisterActivity" />
-        <activity android:name=".activities.GameListActivity" />
-        <activity android:name=".activities.EduListActivity" />
-        <activity android:name=".activities.GameActivity" />
-        <activity android:name=".activities.EduActivity"></activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.HomeActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.GameListActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.EduListActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.GameActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".activities.EduActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".activities.RobotListActivity"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package roboniania.com.roboniania_android.activities;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -51,13 +52,38 @@ public class NavigationDrawerFragment extends Fragment {
                 new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        SideElement element = elements.get(position);
-                        System.out.println("Clicked" + position);
+//                        SideElement element = elements.get(position);
+                        navigateTo(position);
                     }
                 })
         );
         return layout;
     }
+
+    private void navigateTo(int position) {
+        Intent i;
+        switch(position) {
+            case 0:
+                i = new Intent(context, HomeActivity.class);
+                startActivity(i);
+                break;
+            case 1:
+//                i = new Intent(context, HomeActivity.class);
+//                startActivity(i);
+                System.out.println("My Account");
+                break;
+            case 2:
+                i = new Intent(context, RobotListActivity.class);
+                startActivity(i);
+                break;
+            case 3:
+//                i = new Intent(context, HomeActivity.class);
+//                startActivity(i);
+                System.out.println("Settings");
+                break;
+        }
+    }
+
 
     public List<SideElement> getElements() {
         elements = new ArrayList<>();

@@ -28,7 +28,7 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "http://192.168.2.3:8080";
+    private final String url = "http://192.168.2.4:8080";
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
 
