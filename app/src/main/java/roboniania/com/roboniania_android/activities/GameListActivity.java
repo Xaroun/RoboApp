@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class GameListActivity extends AppCompatActivity {
     private AdapterGameList adapterGameList;
     private Context context;
     private List<Game> games;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,10 @@ public class GameListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         context = getApplicationContext();
         initializeList();
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
     }
 
     private void initializeList() {

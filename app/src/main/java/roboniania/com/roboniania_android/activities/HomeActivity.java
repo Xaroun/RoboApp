@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +37,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private final String url = "http://192.168.2.3:8080";
     private ImageView avatar, games, edu;
     private TextView hello;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         edu = (ImageView) findViewById(R.id.edu);
         edu.setOnClickListener(this);
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -108,6 +114,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText pairKey = new EditText(context);
         pairKey.setTextColor(Color.RED);
+        pairKey.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setMessage("Enter robot's pair-key:");
         alert.setTitle("Connecting..");
         alert.setView(pairKey);

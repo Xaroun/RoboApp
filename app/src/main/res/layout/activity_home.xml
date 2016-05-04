@@ -3,56 +3,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".activities.HomeActivity">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/avatar"
+        android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:clickable="true"
-        android:layout_gravity="center"/>
+        android:src="@drawable/avatar" />
 
     <TextView
         android:id="@+id/hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="25sp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
         android:layout_gravity="center"
-        android:text="Blank"/>
+        android:layout_marginTop="20dp"
+        android:text="Blank"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
-        android:gravity="bottom">
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:id="@+id/games"
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:src="@drawable/games_label"
+            android:layout_marginLeft="15dp"
             android:clickable="true"
-            />
+            android:src="@drawable/games_label" />
 
         <ImageView
             android:id="@+id/edu"
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:clickable="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/edu_label"/>
+            android:clickable="true"
+            android:src="@drawable/edu_label" />
     </LinearLayout>
 
 </LinearLayout>
