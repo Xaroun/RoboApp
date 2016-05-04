@@ -1,5 +1,7 @@
 package roboniania.com.roboniania_android.api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -22,4 +24,7 @@ public interface RoboService {
     @GET("/robots")
     Call<Robot> getRobot(@Header("Pair-Key") String pairKey,
                               @Header("Token") String oauthToken);
+
+    @GET("/accounts/robots")
+    Call<List<Robot>> getRobotsList(@Header("Token") String oauthToken);
 }
