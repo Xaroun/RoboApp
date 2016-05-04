@@ -2,6 +2,7 @@ package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,9 +33,14 @@ public class GameListActivity extends AppCompatActivity {
         context = getApplicationContext();
         initializeList();
 
+        //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
+        //SETTING UP SIDEBAR FRAGMENT
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout)findViewById(R.id.drawer_layout), toolbar);
     }
 
     private void initializeList() {

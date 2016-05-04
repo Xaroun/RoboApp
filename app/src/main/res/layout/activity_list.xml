@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.DrawerLayout
+<android.support.v4.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     layout_height="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -25,6 +27,16 @@
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        app:layout="@layout/fragment_navigation_drawer"
+        android:layout_gravity="start"
+        android:name="roboniania.com.roboniania_android.activities.NavigationDrawerFragment"
+        tools:layout="@layout/fragment_navigation_drawer" />
+
 
 </android.support.v4.widget.DrawerLayout>
 
