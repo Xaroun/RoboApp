@@ -21,7 +21,9 @@
         <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.GameListActivity" />
-        <activity android:name=".activities.GameActivity"></activity>
+        <activity android:name=".activities.EduListActivity" />
+        <activity android:name=".activities.GameActivity" />
+        <activity android:name=".activities.EduActivity"></activity>
     </application>
 
 </manifest>

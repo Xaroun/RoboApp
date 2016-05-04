@@ -72,7 +72,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startEduActivity() {
-        System.out.println("AAAAAA");
+        Intent intent = new Intent(this, EduListActivity.class);
+        startActivity(intent);
     }
 
     private void startGamesActivity() {

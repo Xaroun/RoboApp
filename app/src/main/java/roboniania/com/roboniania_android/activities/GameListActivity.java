@@ -12,29 +12,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboniania.com.roboniania_android.R;
-import roboniania.com.roboniania_android.adapter.AdapterList;
+import roboniania.com.roboniania_android.adapter.AdapterGameList;
 import roboniania.com.roboniania_android.adapter.RecyclerItemClickListener;
 import roboniania.com.roboniania_android.adapter.model.Game;
 
 public class GameListActivity extends AppCompatActivity {
 
     private RecyclerView gamesList;
-    private AdapterList adapterList;
+    private AdapterGameList adapterGameList;
     private Context context;
     private List<Game> games;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_list);
+        setContentView(R.layout.activity_list);
         context = getApplicationContext();
         initializeList();
     }
 
     private void initializeList() {
-        gamesList = (RecyclerView) findViewById(R.id.gamesList);
-        adapterList = new AdapterList(this, getGames());
-        gamesList.setAdapter(adapterList);
+        gamesList = (RecyclerView) findViewById(R.id.recyclerList);
+        adapterGameList = new AdapterGameList(this, getGames());
+        gamesList.setAdapter(adapterGameList);
         gamesList.setLayoutManager(new LinearLayoutManager(this));
         gamesList.addOnItemTouchListener(
                 new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {

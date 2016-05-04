@@ -1,7 +1,6 @@
 package roboniania.com.roboniania_android.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,12 @@ import roboniania.com.roboniania_android.adapter.model.Game;
 /**
  * Created by Mateusz on 03.05.2016.
  */
-public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> {
+public class AdapterGameList extends RecyclerView.Adapter<AdapterGameList.MyViewHolder> {
 
     private LayoutInflater inflater;
     private List<Game> games = Collections.emptyList();
 
-    public AdapterList(Context context, List<Game> games) {
+    public AdapterGameList(Context context, List<Game> games) {
         inflater = LayoutInflater.from(context);
         this.games = games;
     }
