@@ -28,7 +28,6 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REGISTER_REQUEST = 1;
-    private final String url = "http://192.168.2.4:8080";
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
 
@@ -99,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(RoboService.ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

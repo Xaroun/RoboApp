@@ -1,59 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.v4.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout2"
+    layout_height="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.HomeActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar" />
-
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="170dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:src="@drawable/avatar3" />
-
-    <TextView
-        android:id="@+id/hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="Blank"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="25sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activities.HomeActivity">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
 
         <ImageView
-            android:id="@+id/games"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginLeft="15dp"
+            android:id="@+id/avatar"
+            android:layout_width="170dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:clickable="true"
-            android:src="@drawable/games_label" />
+            android:src="@drawable/avatar3" />
 
-        <ImageView
-            android:id="@+id/edu"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginLeft="10dp"
-            android:clickable="true"
-            android:src="@drawable/edu_label" />
+        <TextView
+            android:id="@+id/hello"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Blank"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/games"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="15dp"
+                android:clickable="true"
+                android:src="@drawable/games_label" />
+
+            <ImageView
+                android:id="@+id/edu"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="10dp"
+                android:clickable="true"
+                android:src="@drawable/edu_label" />
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>
+

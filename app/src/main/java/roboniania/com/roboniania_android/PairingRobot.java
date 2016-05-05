@@ -25,9 +25,6 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
-    private static final String url = "http://192.168.2.4:8080";
-
-
     public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -57,7 +54,7 @@ public class PairingRobot {
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(RoboService.ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

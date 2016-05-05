@@ -11,8 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
-            android:launchMode="singleInstance">
+            android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,26 +19,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.LoginActivity" />
         <activity
-            android:name=".activities.HomeActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.HomeActivity" />
         <activity
-            android:name=".activities.RegisterActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.RegisterActivity" />
         <activity
-            android:name=".activities.GameListActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.GameListActivity" />
         <activity
-            android:name=".activities.EduListActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.EduListActivity" />
         <activity
-            android:name=".activities.GameActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.GameActivity" />
         <activity
-            android:name=".activities.EduActivity"
-            android:launchMode="singleInstance" />
+            android:name=".activities.EduActivity" />
         <activity android:name=".activities.RobotListActivity"></activity>
     </application>
 

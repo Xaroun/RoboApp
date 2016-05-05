@@ -21,10 +21,8 @@ import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class RobotListActivity extends AppCompatActivity {
-    
-    private final String url = "http://192.168.2.4:8080";
-    private SharedPreferenceStorage userLocalStorage;
 
+    private SharedPreferenceStorage userLocalStorage;
 
 
     @Override
@@ -34,9 +32,9 @@ public class RobotListActivity extends AppCompatActivity {
         userLocalStorage = new SharedPreferenceStorage(this);
 
         //TODO
-        //-wszędzie gdzie tworzę nowy obiekt sharedpreference, powinienem chyba przekazywać ten stary stworzony raz
-        //-po ponownym wejściu w listę gier/edu sidebar ma być schowany (to ma związek z singleInstance w manifeście - bez tego działało, ale pewnie więcej pamięci szło)
-        //-dodać sidebar w HomeActivity
+        //-dodać sidebar w HomeActivity (drawerLayout juz wrzucony w activity_home - nie wiem czy dobrze
+        //-przechwytywac liste robotow (obiekt User)
+        //-dodac mongodb do serwera
         
         getRobotList(this);
     }
@@ -45,7 +43,7 @@ public class RobotListActivity extends AppCompatActivity {
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(RoboService.ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
