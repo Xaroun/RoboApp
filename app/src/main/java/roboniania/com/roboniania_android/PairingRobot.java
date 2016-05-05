@@ -16,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import roboniania.com.roboniania_android.activities.RobotListActivity;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
@@ -25,7 +26,17 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
+    private static RobotListActivity robotListActivity;
+
+    public PairingRobot(RobotListActivity robotListActivity) {
+        //NEED TO PASS IT JUST FOR REFRESHING ACTIVITY AFTER PAIRING
+        this.robotListActivity = robotListActivity;
+    }
+
     public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
+
+        robotListActivity.getApplicationContext();
+
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
         pairKey.setTextColor(Color.RED);
@@ -43,7 +54,6 @@ public class PairingRobot {
 
         alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-
             }
         });
 
@@ -71,11 +81,13 @@ public class PairingRobot {
                     int statusCode = response.code();
                     Robot robot = response.body();
 
-                    System.out.println(statusCode);
-                    System.out.println(robot.getIp());
-                    System.out.println(robot.getSn());
-                    System.out.println(robot.getUuid());
+//                    System.out.println(statusCode);
+//                    System.out.println(robot.getIp());
+//                    System.out.println(robot.getSn());
+//                    System.out.println(robot.getUuid());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
+                    robotListActivity.finish();
+                    robotListActivity.startActivity(robotListActivity.getIntent());
 //                    finish();
 
                 } else {
@@ -90,7 +102,6 @@ public class PairingRobot {
             public void onFailure(Call<Robot> call, Throwable t) {
                 t.printStackTrace();
             }
-
         });
 
     }

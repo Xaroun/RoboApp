@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     setResult(Activity.RESULT_OK, returnIntent);
 
                     System.out.println(statusCode);
-                    System.out.println(accessToken.getAccess_token());
+                    System.out.println("TOKEN: " + accessToken.getAccess_token());
                     sendResultForMainActivity();
                     finish();
 

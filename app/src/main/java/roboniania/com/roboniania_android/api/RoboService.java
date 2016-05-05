@@ -11,13 +11,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
 import roboniania.com.roboniania_android.api.model.Robot;
+import roboniania.com.roboniania_android.api.model.User;
 
 /**
  * Created by s396348 on 2016-04-25.
  */
 public interface RoboService {
 
-    public static final String ENDPOINT = "http://150.254.79.212:8080";
+    public static final String ENDPOINT = "http://192.168.2.4:8080";
 
     @GET("/oauth2/token")
     Call<OAuthToken> getToken(@Header("Login") String login,
@@ -28,5 +29,5 @@ public interface RoboService {
                               @Header("Token") String oauthToken);
 
     @GET("/accounts/robots")
-    Call<List<Robot>> getRobotsList(@Header("Token") String oauthToken);
+    Call<User> getRobotsList(@Header("Token") String oauthToken);
 }
