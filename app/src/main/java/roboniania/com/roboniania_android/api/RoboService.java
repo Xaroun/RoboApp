@@ -18,7 +18,7 @@ import roboniania.com.roboniania_android.api.model.User;
  */
 public interface RoboService {
 
-    public static final String ENDPOINT = "http://192.168.2.4:8080";
+    public static final String ENDPOINT = "http://192.168.2.5:8080";
 
     @GET("/oauth2/token")
     Call<OAuthToken> getToken(@Header("Login") String login,

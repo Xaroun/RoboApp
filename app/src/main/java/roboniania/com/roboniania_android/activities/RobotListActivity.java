@@ -127,7 +127,7 @@ public class RobotListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
+                pairingRobot.showPairDialog(this, userLocalStorage);
 
                 return true;
         }

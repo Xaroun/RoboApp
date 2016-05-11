@@ -30,6 +30,7 @@ public class GameListActivity extends AppCompatActivity {
     private List<Game> games;
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
+    private PairingRobot pairingRobot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class GameListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         context = getApplicationContext();
         userLocalStorage = new SharedPreferenceStorage(this);
+        pairingRobot = new PairingRobot(this);
 
         initializeList();
 
@@ -107,7 +109,7 @@ public class GameListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
+                pairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 

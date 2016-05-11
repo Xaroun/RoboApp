@@ -20,12 +20,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView avatar, games, edu;
     private TextView hello;
     private Toolbar toolbar;
+    private PairingRobot pairingRobot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         userLocalStorage = new SharedPreferenceStorage(this);
+        pairingRobot = new PairingRobot(this);
 
         hello = (TextView) findViewById(R.id.hello);
 //        hello.setText("Hello " + getIntent().getExtras().getString("EMAIL"));
@@ -90,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
+                pairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 

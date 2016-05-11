@@ -1,5 +1,6 @@
 package roboniania.com.roboniania_android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -26,16 +27,16 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
-    private static RobotListActivity robotListActivity;
+    private static Activity activity;
 
-    public PairingRobot(RobotListActivity robotListActivity) {
+    public PairingRobot(Activity activity) {
         //NEED TO PASS IT JUST FOR REFRESHING ACTIVITY AFTER PAIRING
-        this.robotListActivity = robotListActivity;
+        this.activity = activity;
     }
 
     public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
 
-        robotListActivity.getApplicationContext();
+        activity.getApplicationContext();
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -86,8 +87,8 @@ public class PairingRobot {
 //                    System.out.println(robot.getSn());
 //                    System.out.println(robot.getUuid());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-                    robotListActivity.finish();
-                    robotListActivity.startActivity(robotListActivity.getIntent());
+                    activity.finish();
+                    activity.startActivity(activity.getIntent());
 //                    finish();
 
                 } else {
