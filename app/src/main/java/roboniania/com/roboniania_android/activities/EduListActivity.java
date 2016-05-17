@@ -30,7 +30,7 @@ public class EduListActivity extends AppCompatActivity {
     private List<Edu> edus;
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
-    private PairingRobot pairingRobot;
+//    private PairingRobot pairingRobot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class EduListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         context = getApplicationContext();
         userLocalStorage = new SharedPreferenceStorage(this);
-        pairingRobot = new PairingRobot(this);
+//        pairingRobot = new PairingRobot(this);
 
         initializeList();
 
@@ -109,7 +109,7 @@ public class EduListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                pairingRobot.showPairDialog(this, userLocalStorage);
+                PairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
         return super.onOptionsItemSelected(item);

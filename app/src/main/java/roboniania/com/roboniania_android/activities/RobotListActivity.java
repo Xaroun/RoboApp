@@ -2,6 +2,7 @@ package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,16 +41,39 @@ public class RobotListActivity extends AppCompatActivity {
     private Context context;
     private List<Robot> robots;
     private Toolbar toolbar;
-    private PairingRobot pairingRobot;
+//    private PairingRobot pairingRobot;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot_list);
         userLocalStorage = new SharedPreferenceStorage(this);
-        pairingRobot = new PairingRobot(this);
+//        pairingRobot = new PairingRobot(this);
 
         initializeList();
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                adapterRobotList.clear();
+
+//                robots.clear();
+//                adapterRobotList.notifyDataSetChanged();
+//                robots.addAll(getRobotList());
+//                adapterRobotList.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
 
         //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -127,7 +151,7 @@ public class RobotListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                pairingRobot.showPairDialog(this, userLocalStorage);
+                PairingRobot.showPairDialog(this, userLocalStorage);
 
                 return true;
         }

@@ -29,14 +29,14 @@ public class PairingRobot {
 
     private static Activity activity;
 
-    public PairingRobot(Activity activity) {
-        //NEED TO PASS IT JUST FOR REFRESHING ACTIVITY AFTER PAIRING
-        this.activity = activity;
-    }
+//    public PairingRobot(Activity activity) {
+//        //NEED TO PASS IT JUST FOR REFRESHING ACTIVITY AFTER PAIRING
+//        this.activity = activity;
+//    }
 
     public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
 
-        activity.getApplicationContext();
+//        activity.getApplicationContext();
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -87,8 +87,8 @@ public class PairingRobot {
 //                    System.out.println(robot.getSn());
 //                    System.out.println(robot.getUuid());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-                    activity.finish();
-                    activity.startActivity(activity.getIntent());
+//                    activity.finish();
+//                    activity.startActivity(activity.getIntent());
 //                    finish();
 
                 } else {

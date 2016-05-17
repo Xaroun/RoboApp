@@ -29,6 +29,18 @@ public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyVi
         this.robots = robots;
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        robots.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items
+    public void addAll(List<Robot> list) {
+        robots.addAll(list);
+        notifyDataSetChanged();
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.robot_row, parent, false);
