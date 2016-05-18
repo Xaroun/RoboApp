@@ -77,15 +77,15 @@ public class GameListActivity extends AppCompatActivity {
     public List<Game> getGames() {
         games = new ArrayList<>();
         int[] icons = {
-                R.drawable.game_icon1,
-                R.drawable.game_icon2,
-                R.drawable.game_icon3
+                R.drawable.tictactoe,
+                R.drawable.smile,
+                R.drawable.forward
         };
 
         String[] titles = {
                 "TIC-TAC-TOE",
-                "SOLITAIRE",
-                "CHESS"
+                "TAG",
+                "MOVING"
         };
 
         for (int i = 0; i < icons.length && i <titles.length; i++) {

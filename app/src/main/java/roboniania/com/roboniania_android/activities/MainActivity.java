@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isAuthenticated() {
-//        userLocalStorage.clearUserData();
+        userLocalStorage.clearUserData();
         return userLocalStorage.getUserLoggedIn();
     }
 

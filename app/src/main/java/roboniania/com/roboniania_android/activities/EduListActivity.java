@@ -77,15 +77,15 @@ public class EduListActivity extends AppCompatActivity {
     public List<Edu> getEdus() {
         edus = new ArrayList<>();
         int[] icons = {
-                R.drawable.edu_icon1,
-                R.drawable.edu_icon2,
-                R.drawable.edu_icon3
+                R.drawable.letters,
+                R.drawable.animal,
+                R.drawable.language
         };
 
         String[] titles = {
                 "LETTERS",
                 "ANIMALS",
-                "ENGLISH"
+                "LEARN ENGLISH"
         };
 
         for (int i = 0; i < icons.length && i <titles.length; i++) {

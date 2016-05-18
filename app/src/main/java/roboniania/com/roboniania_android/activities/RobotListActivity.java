@@ -1,6 +1,7 @@
 package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,15 +34,13 @@ import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
-public class RobotListActivity extends AppCompatActivity {
+public class RobotListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private SharedPreferenceStorage userLocalStorage;
     private RecyclerView robotsList;
     private AdapterRobotList adapterRobotList;
-    private Context context;
-    private List<Robot> robots;
+    private List<Robot> robotsDownloaded = new ArrayList<>();
     private Toolbar toolbar;
-//    private PairingRobot pairingRobot;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -49,31 +48,13 @@ public class RobotListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot_list);
         userLocalStorage = new SharedPreferenceStorage(this);
-//        pairingRobot = new PairingRobot(this);
 
         initializeList();
 
+        //SETTING UP SWIPE REFRESH LAYOUT
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-//                adapterRobotList.clear();
-
-//                robots.clear();
-//                adapterRobotList.notifyDataSetChanged();
-//                robots.addAll(getRobotList());
-//                adapterRobotList.notifyDataSetChanged();
-//                swipeRefreshLayout.setRefreshing(false);
-
-            }
-        });
-
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright);
 
         //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -88,15 +69,14 @@ public class RobotListActivity extends AppCompatActivity {
 
     private void initializeList() {
         robotsList = (RecyclerView) findViewById(R.id.recyclerList);
-        adapterRobotList = new AdapterRobotList(this, getRobotList());
+        getRobotList();
+        adapterRobotList = new AdapterRobotList(this, robotsDownloaded);
         robotsList.setAdapter(adapterRobotList);
         robotsList.setLayoutManager(new LinearLayoutManager(this));
     }
 
 
-    public List<Robot> getRobotList() {
-
-        robots = new ArrayList<>();
+    public void getRobotList() {
 
         Gson gson = new GsonBuilder().create();
 
@@ -116,14 +96,14 @@ public class RobotListActivity extends AppCompatActivity {
                     int statusCode = response.code();
                     User user = response.body();
 
-
                     for (Robot robot : user.getRobots()) {
-                        robots.add(robot);
+                        robotsDownloaded.add(robot);
+//                        System.out.println(robotsDownloaded.size());
                         System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
                     }
 
+//                    System.out.println(user.getRobots().get)
                     System.out.println(statusCode);
-
                 } else {
                     System.out.println("HIUSTON");
                     //TODO catch code error
@@ -136,8 +116,6 @@ public class RobotListActivity extends AppCompatActivity {
             }
 
         });
-
-        return robots;
     }
 
     @Override
@@ -157,5 +135,19 @@ public class RobotListActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        robotsDownloaded.clear();
+        getRobotList();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                adapterRobotList.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 100);
+
     }
 }

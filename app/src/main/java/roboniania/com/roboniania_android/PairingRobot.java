@@ -27,16 +27,8 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
-    private static Activity activity;
-
-//    public PairingRobot(Activity activity) {
-//        //NEED TO PASS IT JUST FOR REFRESHING ACTIVITY AFTER PAIRING
-//        this.activity = activity;
-//    }
 
     public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
-
-//        activity.getApplicationContext();
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -79,8 +71,8 @@ public class PairingRobot {
             @Override
             public void onResponse(Call<Robot> call, Response<Robot> response) {
                 if (response.isSuccessful()) {
-                    int statusCode = response.code();
-                    Robot robot = response.body();
+//                    int statusCode = response.code();
+//                    Robot robot = response.body();
 
 //                    System.out.println(statusCode);
 //                    System.out.println(robot.getIp());
