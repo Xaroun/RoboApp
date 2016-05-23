@@ -71,17 +71,7 @@ public class PairingRobot {
             @Override
             public void onResponse(Call<Robot> call, Response<Robot> response) {
                 if (response.isSuccessful()) {
-//                    int statusCode = response.code();
-//                    Robot robot = response.body();
-
-//                    System.out.println(statusCode);
-//                    System.out.println(robot.getIp());
-//                    System.out.println(robot.getSn());
-//                    System.out.println(robot.getUuid());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-//                    activity.finish();
-//                    activity.startActivity(activity.getIntent());
-//                    finish();
 
                 } else {
                     Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
@@ -97,5 +87,8 @@ public class PairingRobot {
             }
         });
 
+
+
     }
+
 }

@@ -9,6 +9,12 @@ public class Robot {
     private String sn;
     private String uuid;
 
+    public Robot(String ip, String sn, String uuid) {
+        this.ip = ip;
+        this.sn = sn;
+        this.uuid = uuid;
+    }
+
     public String getIp() {
         return ip;
     }
