@@ -15,6 +15,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
+import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -95,51 +100,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login(String email, String password) {
-        Gson gson = new GsonBuilder().create();
+        NetworkProvider networkProvider = new NetworkProvider(context, userLocalStorage);
+        try {
+            networkProvider.login(email, password);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RoboService.ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        if (networkProvider.getRESPONSE_CODE() == 200) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+            System.out.println(networkProvider.getRESPONSE_CODE());
+//            System.out.println("TOKEN: " + accessToken.getAccess_token());
+            sendResultForMainActivity();
+            finish();
+        }
 
-
-        RoboService roboService = retrofit.create(RoboService.class);
-
-
-        Call<OAuthToken> call = roboService.getToken(email, password);
-
-        call.enqueue(new Callback<OAuthToken>() {
-            @Override
-            public void onResponse(Call<OAuthToken> call, Response<OAuthToken> response) {
-                if (response.isSuccessful()) {
-                    int statusCode = response.code();
-                    OAuthToken accessToken = response.body();
-
-                    // Save token to shared prefernces
-                    userLocalStorage.storeAccessToken(accessToken.getAccess_token());
-                    userLocalStorage.setUserLoggedIn(true);
-
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK, returnIntent);
-
-                    System.out.println(statusCode);
-                    System.out.println("TOKEN: " + accessToken.getAccess_token());
-                    sendResultForMainActivity();
-                    finish();
-
-                } else {
-                    Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
-                    System.out.println("invalid email or password");
-                    //TODO catch code error
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OAuthToken> call, Throwable t) {
-                t.printStackTrace();
-            }
-
-        });
     }
 
 

@@ -14,57 +14,81 @@ public class NetworkRequest {
     private final String url;
     private final HttpMethod method;
     private final String body;
-    private HttpURLConnection conn;
+//    private HttpURLConnection conn;
     private SharedPreferenceStorage userLocalStorage;
+    private String login, password, pairKey, type;
+    private int RESPONSE_CODE;
 
-    public NetworkRequest(String url, HttpMethod method, String body, String type) {
+    public NetworkRequest(String url, HttpMethod method, String body, SharedPreferenceStorage userLocalStorage, String type) {
         this.url = url;
         this.method = method;
         this.body = body;
-        this.conn = setHeaders(type);
+        this.userLocalStorage = userLocalStorage;
+        this.type = type;
     }
 
-    public HttpURLConnection setHeaders(String type) {
-        switch(type) {
-            case "login":
-                conn.setRequestProperty("Login", "");
-                conn.setRequestProperty("Password","");
-                return conn;
-            case "robot_pair":
-                conn.setRequestProperty("Pair-Key","");
-                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
-                return conn;
-            case "robot_list":
-                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
-                return conn;
-            default:
-                return conn;
-        }
+    public NetworkRequest(String url, HttpMethod method, String body, String login, String password, String type) {
+        this.url = url;
+        this.method = method;
+        this.body = body;
+        this.login = login;
+        this.password = password;
+        this.type = type;
     }
 
-
-
-    public NetworkRequest(String url, HttpMethod method, String type) {
-        this(url, method, null, type);
+    public NetworkRequest(String url, HttpMethod method, String body, SharedPreferenceStorage userLocalStorage, String pairKey, String type) {
+        this.url = url;
+        this.method = method;
+        this.body = body;
+        this.pairKey = pairKey;
+        this.userLocalStorage = userLocalStorage;
+        this.type = type;
     }
+
+    public int getRESPONSE_CODE() {
+        return RESPONSE_CODE;
+    }
+
+//    public void setHeaders(String type) {
+//        switch(type) {
+//            case "login_code":
+//                conn.setRequestProperty("Login", login);
+//                conn.setRequestProperty("Password",password);
+//                break;
+////                return conn;
+//            case "robot_pair":
+//                conn.setRequestProperty("Pair-Key",pairKey);
+//                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
+//                break;
+////                return conn;
+//            case "robot_list":
+//                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
+//                break;
+////                return conn;
+////            default:
+////                return conn;
+//        }
+//    }
 
     public String execute() throws IOException {
         InputStream is = null;
 
         try {
             URL url = new URL(this.url);
-            conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod(method.getMethod());
             conn.setDoInput(true);
-
+//            setHeaders(type);
+            conn.setRequestProperty("Login", login);
+            conn.setRequestProperty("Password", password);
             if (body != null) {
                 conn.getOutputStream().write(body.getBytes());
             }
-
             conn.connect();
             is = conn.getInputStream();
+            RESPONSE_CODE = conn.getResponseCode();
 
             return readStream(is);
         } finally {
