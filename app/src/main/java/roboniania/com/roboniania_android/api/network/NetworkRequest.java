@@ -14,7 +14,6 @@ public class NetworkRequest {
     private final String url;
     private final HttpMethod method;
     private final String body;
-//    private HttpURLConnection conn;
     private SharedPreferenceStorage userLocalStorage;
     private String login, password, pairKey, type;
     private int RESPONSE_CODE;
@@ -49,26 +48,21 @@ public class NetworkRequest {
         return RESPONSE_CODE;
     }
 
-//    public void setHeaders(String type) {
-//        switch(type) {
-//            case "login_code":
-//                conn.setRequestProperty("Login", login);
-//                conn.setRequestProperty("Password",password);
-//                break;
-////                return conn;
-//            case "robot_pair":
-//                conn.setRequestProperty("Pair-Key",pairKey);
-//                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
-//                break;
-////                return conn;
-//            case "robot_list":
-//                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
-//                break;
-////                return conn;
-////            default:
-////                return conn;
-//        }
-//    }
+    public void setHeaders(String type, HttpURLConnection conn) {
+        switch(type) {
+            case "login_code":
+                conn.setRequestProperty("Login", login);
+                conn.setRequestProperty("Password",password);
+                break;
+            case "robot_pair":
+                conn.setRequestProperty("Pair-Key",pairKey);
+                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
+                break;
+            case "robot_list":
+                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
+                break;
+        }
+    }
 
     public String execute() throws IOException {
         InputStream is = null;
@@ -76,19 +70,24 @@ public class NetworkRequest {
         try {
             URL url = new URL(this.url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
             conn.setRequestMethod(method.getMethod());
             conn.setDoInput(true);
-//            setHeaders(type);
-            conn.setRequestProperty("Login", login);
-            conn.setRequestProperty("Password", password);
+            conn.setRequestProperty("Accept","application/json");
+            conn.setRequestProperty("Content-Type","application/json");
+            setHeaders(type, conn);
             if (body != null) {
                 conn.getOutputStream().write(body.getBytes());
             }
             conn.connect();
-            is = conn.getInputStream();
             RESPONSE_CODE = conn.getResponseCode();
+            System.out.println("RESPONSE CODE IN REQUEST: " + RESPONSE_CODE);
+            if (RESPONSE_CODE == 202 || RESPONSE_CODE == 200) {
+                is = conn.getInputStream();
+            } else {
+                return null;
+            }
 
             return readStream(is);
         } finally {

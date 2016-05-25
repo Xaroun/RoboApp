@@ -4,9 +4,9 @@
     <string name="already_member">Already a member? Login </string>
     <string name="account_created">You have successfully created an account</string>
     <string name="wrong_credentials">Your email or password is invalid</string>
-    <string name="wrong_match">"Pair-key and token doesn't match</string>
-    <string name="successfully_paired">"Robot has been successfully paired with your account.</string>
-    <string name="no_internet">You are not connected to the Internet.</string>
+    <string name="wrong_match">"Pairkey is invalid or already used</string>
+    <string name="successfully_paired">"Robot has been successfully paired with your account</string>
+    <string name="no_internet">You are not connected to the Internet</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>

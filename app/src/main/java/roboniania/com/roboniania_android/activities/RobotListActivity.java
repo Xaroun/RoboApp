@@ -42,12 +42,14 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     private List<Robot> robotsDownloaded = new ArrayList<>();
     private Toolbar toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot_list);
         userLocalStorage = new SharedPreferenceStorage(this);
+        handler = new Handler();
 
         initializeList();
 
@@ -129,8 +131,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
-
+                PairingRobot.showPairDialog(this, userLocalStorage, handler);
                 return true;
         }
 

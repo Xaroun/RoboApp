@@ -1,17 +1,33 @@
 package roboniania.com.roboniania_android.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
+import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -20,12 +36,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView avatar, games, edu;
     private TextView hello;
     private Toolbar toolbar;
+    private Handler handler;
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         userLocalStorage = new SharedPreferenceStorage(this);
+        handler = new Handler();
 
         hello = (TextView) findViewById(R.id.hello);
 //        hello.setText("Hello " + getIntent().getExtras().getString("EMAIL"));
@@ -81,7 +100,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
@@ -90,8 +108,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
-
+                PairingRobot.showPairDialog(this, userLocalStorage, handler);
                 return true;
         }
 

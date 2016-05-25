@@ -3,6 +3,9 @@ package roboniania.com.roboniania_android.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +38,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int REGISTER_REQUEST = 1;
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
+    private Handler handler;
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
 
     private Button loginBtn;
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = getApplicationContext();
+        handler = new Handler();
 
         //Initialize components
         loginBtn = (Button) findViewById(R.id.login_button);
@@ -61,13 +67,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         userLocalStorage = new SharedPreferenceStorage(this);
     }
 
+
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.login_button:
-                String email = emailText.getText().toString();
-                String password = passwordText.getText().toString();
-                login(email, password);
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String email = emailText.getText().toString();
+                        String password = passwordText.getText().toString();
+                        login(email, password);
+                    }
+                }).start();
                 break;
             case R.id.signup_link:
                 startRegisterActivity();
@@ -100,22 +114,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login(String email, String password) {
-        NetworkProvider networkProvider = new NetworkProvider(context, userLocalStorage);
+        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
         try {
-            networkProvider.login(email, password);
+            networkProvider.login(email, password, new NetworkProvider.OnResponseReceivedListener() {
+
+                @Override
+                public void onResponseReceived() {
+                    handler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+//                            Log.d(TAG, "RESPONSE CODE:  " + networkProvider.getRESPONSE_CODE());
+                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
+                                sendResultForMainActivity();
+                            } else {
+                                Log.d(TAG, "Wrong credentials.");
+                                Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-
-        if (networkProvider.getRESPONSE_CODE() == 200) {
-            Intent returnIntent = new Intent();
-            setResult(Activity.RESULT_OK, returnIntent);
-            System.out.println(networkProvider.getRESPONSE_CODE());
-//            System.out.println("TOKEN: " + accessToken.getAccess_token());
-            sendResultForMainActivity();
-            finish();
         }
 
     }

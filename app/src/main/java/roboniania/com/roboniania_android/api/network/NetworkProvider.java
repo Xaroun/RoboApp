@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -49,7 +50,11 @@ public class NetworkProvider {
         return RESPONSE_CODE;
     }
 
-    public void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
+    public interface OnResponseReceivedListener {
+        void onResponseReceived();
+    }
+
+    public void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage, final OnResponseReceivedListener listener) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
         pairKey.setTextColor(Color.RED);
@@ -64,12 +69,17 @@ public class NetworkProvider {
                 try {
                     if (isOnline()) {
                         String s = checkPairKey(userLocalStorage, pairKey.getText().toString());
-                        parseRobot(s);
-                    } else {
-                        Toast.makeText(context, context.getString(R.string.no_internet), Toast.LENGTH_LONG).show();
-                    }
+                        if (s == null) {
+                            // INVALID PAIRKEY
+                        } else {
+                            parseRobot(s);
+                        }
 
-//                    checkPairKey(pairKey.getText().toString(), userLocalStorage);
+                    } else {
+                        // INVALID PAIRKEY
+                    }
+                    listener.onResponseReceived();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -87,33 +97,46 @@ public class NetworkProvider {
     }
 
     private void parseRobot(String robotString) throws JSONException {
-        JSONObject recipesObject = new JSONObject(robotString);
-        JSONArray recipesArray = recipesObject.getJSONArray("robots");
+        JSONObject recipeObject = new JSONObject(robotString);
 
-        for (int i = 0; i < recipesArray.length(); ++i) {
-            JSONObject recipeObject = recipesArray.getJSONObject(i);
-
-            Robot robot = new Robot(recipeObject.getString("ip"),
+        Robot robot = new Robot(recipeObject.getString("ip"),
                     recipeObject.getString("sn"),
                     recipeObject.getString("uuid"));
 
             robots.add(robot);
+
+    }
+
+    public void pair(SharedPreferenceStorage userLocalStorage, String pairKey, OnResponseReceivedListener listener) throws IOException, JSONException {
+        if (isOnline()) {
+            String s = checkPairKey(userLocalStorage, pairKey);
+            if (s == null) {
+                // INVALID PAIRKEY
+            } else {
+                parseRobot(s);
+            }
+
+        } else {
+            // NO INTERNET
         }
+        listener.onResponseReceived();
     }
 
     private String checkPairKey(SharedPreferenceStorage userLocalStorage, String pairKey) throws IOException {
         NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_PAIR, HttpMethod.GET, null, userLocalStorage, pairKey, robot_pair);
         String response = request.execute();
-        if (request.getRESPONSE_CODE() == 200) {
-            Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
+        RESPONSE_CODE = request.getRESPONSE_CODE();
+        System.out.println("RESPONSE CODE IN PROVIDER : " + RESPONSE_CODE);
+
+        if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
+            // SUCCESFULLY PAIRED
+            return response;
         }
         else {
-            Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
-            System.out.println("pair-key and token doesn't match");
+            // INVALID PAIRKEY
+            return null;
             //TODO catch code error
         }
-
-        return response;
     }
 
     public boolean isOnline() {
@@ -123,28 +146,23 @@ public class NetworkProvider {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public void login(String login, String password) throws IOException, JSONException {
+    public void login(String login, String password, OnResponseReceivedListener listener) throws IOException, JSONException {
         NetworkRequest request = new NetworkRequest(RoboService.OAUTH, HttpMethod.GET, null, login, password, login_code);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
 
-        if (request.getRESPONSE_CODE() == 200) {
-            OAuthToken accessToken = parseResponse(response);
+        if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
+            OAuthToken accessToken = parseToken(response);
 
             // Save token to shared prefernces
             userLocalStorage.storeAccessToken(accessToken.getAccess_token());
             userLocalStorage.setUserLoggedIn(true);
-            System.out.println("TOKEN :" + accessToken.getAccess_token());
+            System.out.println("TOKEN: " + accessToken.getAccess_token());
         }
-        else {
-            Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
-            System.out.println("invalid email or password");
-            //TODO catch code error
-        }
-
+        listener.onResponseReceived();
     }
 
-    private OAuthToken parseResponse(String response) throws JSONException{
+    private OAuthToken parseToken(String response) throws JSONException{
         JSONObject responseObject = new JSONObject(response);
         OAuthToken token = new OAuthToken();
         token.setAccess_token(responseObject.getString("access_token"));

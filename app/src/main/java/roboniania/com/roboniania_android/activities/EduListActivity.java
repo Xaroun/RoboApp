@@ -3,6 +3,7 @@ package roboniania.com.roboniania_android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ public class EduListActivity extends AppCompatActivity {
     private Context context;
     private List<Edu> edus;
     private Toolbar toolbar;
+    private Handler handler;
     private SharedPreferenceStorage userLocalStorage;
 //    private PairingRobot pairingRobot;
 
@@ -37,6 +39,7 @@ public class EduListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         context = getApplicationContext();
+        handler = new Handler();
         userLocalStorage = new SharedPreferenceStorage(this);
 //        pairingRobot = new PairingRobot(this);
 
@@ -109,7 +112,7 @@ public class EduListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage);
+                PairingRobot.showPairDialog(this, userLocalStorage, handler);
                 return true;
         }
         return super.onOptionsItemSelected(item);

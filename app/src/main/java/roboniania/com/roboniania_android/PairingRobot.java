@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.widget.EditText;
@@ -11,6 +12,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.activities.RobotListActivity;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
+import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 /**
@@ -27,8 +33,13 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
+    private static String pairKeyString;
 
-    public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
+    public String getPairKeyString() {
+        return pairKeyString;
+    }
+
+    public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage, final Handler handler) {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -41,7 +52,14 @@ public class PairingRobot {
 
         alert.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                checkPairKey(pairKey.getText().toString(), userLocalStorage, context);
+                pairKeyString = pairKey.getText().toString();
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        startPairing(context, userLocalStorage, handler);
+                    }
+                }).start();
             }
         });
 
@@ -53,42 +71,31 @@ public class PairingRobot {
         alert.show();
     }
 
-    public static void checkPairKey(String pairKey, SharedPreferenceStorage userLocalStorage, final Context context) {
-        Gson gson = new GsonBuilder().create();
+    private static void startPairing(final Context context, SharedPreferenceStorage userLocalStorage, final Handler handler) {
+        final NetworkProvider networkProvider = new NetworkProvider(context, userLocalStorage);
+        try {
+            networkProvider.pair(userLocalStorage, pairKeyString, new NetworkProvider.OnResponseReceivedListener() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RoboService.ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+                @Override
+                public void onResponseReceived() {
+                    handler.post(new Runnable() {
 
-
-        RoboService roboService = retrofit.create(RoboService.class);
-
-
-        Call<Robot> call = roboService.getRobot(pairKey, userLocalStorage.getAccessToken());
-
-        call.enqueue(new Callback<Robot>() {
-            @Override
-            public void onResponse(Call<Robot> call, Response<Robot> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
-                    System.out.println("pair-key and token doesn't match");
-                    //TODO catch code error
+                        @Override
+                        public void run() {
+                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
+                                Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
-
-            }
-
-            @Override
-            public void onFailure(Call<Robot> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
-
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
