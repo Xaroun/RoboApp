@@ -62,7 +62,7 @@ public class PairingRobot {
     private static void startPairing(final Context context, SharedPreferenceStorage userLocalStorage, final Handler handler) {
         final NetworkProvider networkProvider = new NetworkProvider(context, userLocalStorage);
         try {
-            networkProvider.pair(userLocalStorage, pairKeyString, new NetworkProvider.OnResponseReceivedListener() {
+            networkProvider.pair(pairKeyString, new NetworkProvider.OnResponseReceivedListener() {
 
                 @Override
                 public void onResponseReceived() {

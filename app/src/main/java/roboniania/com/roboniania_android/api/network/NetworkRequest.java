@@ -48,7 +48,7 @@ public class NetworkRequest {
         return RESPONSE_CODE;
     }
 
-    public void setHeaders(String type, HttpURLConnection conn) {
+    private void setHeaders(String type, HttpURLConnection conn) {
         switch(type) {
             case "login_code":
                 conn.setRequestProperty("Login", login);
@@ -97,7 +97,7 @@ public class NetworkRequest {
         }
     }
 
-    public String readStream(InputStream stream) throws IOException {
+    private String readStream(InputStream stream) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(stream));
         StringBuilder total = new StringBuilder();
         String line;

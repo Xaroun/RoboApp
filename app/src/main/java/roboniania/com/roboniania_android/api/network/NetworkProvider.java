@@ -69,9 +69,9 @@ public class NetworkProvider {
 
     }
 
-    public void pair(SharedPreferenceStorage userLocalStorage, String pairKey, OnResponseReceivedListener listener) throws IOException, JSONException {
+    public void pair(String pairKey, OnResponseReceivedListener listener) throws IOException, JSONException {
         if (isOnline()) {
-            String s = checkPairKey(userLocalStorage, pairKey);
+            String s = checkPairKey(pairKey);
             if (s == null) {
                 // INVALID PAIRKEY
             } else {
@@ -85,7 +85,7 @@ public class NetworkProvider {
         listener.onResponseReceived();
     }
 
-    private String checkPairKey(SharedPreferenceStorage userLocalStorage, String pairKey) throws IOException {
+    private String checkPairKey(String pairKey) throws IOException {
         NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_PAIR, HttpMethod.GET, null, userLocalStorage, pairKey, robot_pair);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
@@ -102,7 +102,7 @@ public class NetworkProvider {
         }
     }
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
