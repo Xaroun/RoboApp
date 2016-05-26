@@ -9,14 +9,19 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +37,7 @@ import roboniania.com.roboniania_android.adapter.RecyclerItemClickListener;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
+import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class RobotListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
@@ -51,8 +57,6 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();
 
-        initializeList();
-
         //SETTING UP SWIPE REFRESH LAYOUT
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -67,11 +71,18 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
+        initializeList();
     }
 
     private void initializeList() {
         robotsList = (RecyclerView) findViewById(R.id.recyclerList);
         getRobotList();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         adapterRobotList = new AdapterRobotList(this, robotsDownloaded);
         robotsList.setAdapter(adapterRobotList);
         robotsList.setLayoutManager(new LinearLayoutManager(this));
@@ -79,45 +90,24 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
 
 
     public void getRobotList() {
-
-        Gson gson = new GsonBuilder().create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RoboService.ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RoboService roboService = retrofit.create(RoboService.class);
-
-        Call<User> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
-
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    int statusCode = response.code();
-                    User user = response.body();
-
-                    for (Robot robot : user.getRobots()) {
-                        robotsDownloaded.add(robot);
-//                        System.out.println(robotsDownloaded.size());
-                        System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
-                    }
-
-//                    System.out.println(user.getRobots().get)
-                    System.out.println(statusCode);
-                } else {
-                    System.out.println("HIUSTON");
-                    //TODO catch code error
-                }
-            }
+        new Thread(new Runnable() {
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                t.printStackTrace();
+            public void run() {
+                downloadRobotList();
             }
+        }).start();
+    }
 
-        });
+    private void downloadRobotList() {
+        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
+        try {
+            robotsDownloaded = networkProvider.getRobotList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -141,14 +131,8 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         robotsDownloaded.clear();
-        getRobotList();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                adapterRobotList.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 100);
-
+        initializeList();
+        swipeRefreshLayout.setRefreshing(false);
     }
+
 }

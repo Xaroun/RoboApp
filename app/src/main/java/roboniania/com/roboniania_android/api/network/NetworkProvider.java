@@ -46,6 +46,10 @@ public class NetworkProvider {
         this.userLocalStorage = userLocalStorage;
     }
 
+    public List<Robot> getRobots() {
+        return robots;
+    }
+
     public int getRESPONSE_CODE() {
         return RESPONSE_CODE;
     }
@@ -54,56 +58,14 @@ public class NetworkProvider {
         void onResponseReceived();
     }
 
-    public void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage, final OnResponseReceivedListener listener) {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        final EditText pairKey = new EditText(context);
-        pairKey.setTextColor(Color.RED);
-        pairKey.setInputType(InputType.TYPE_CLASS_NUMBER);
-        alert.setMessage("Enter robot's pair-key:");
-        alert.setTitle("Connecting..");
-        alert.setView(pairKey);
-
-
-        alert.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                try {
-                    if (isOnline()) {
-                        String s = checkPairKey(userLocalStorage, pairKey.getText().toString());
-                        if (s == null) {
-                            // INVALID PAIRKEY
-                        } else {
-                            parseRobot(s);
-                        }
-
-                    } else {
-                        // INVALID PAIRKEY
-                    }
-                    listener.onResponseReceived();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            }
-        });
-
-        alert.show();
-    }
-
-    private void parseRobot(String robotString) throws JSONException {
+    private Robot parseRobot(String robotString) throws JSONException {
         JSONObject recipeObject = new JSONObject(robotString);
 
         Robot robot = new Robot(recipeObject.getString("ip"),
                     recipeObject.getString("sn"),
                     recipeObject.getString("uuid"));
 
-            robots.add(robot);
+            return robot;
 
     }
 
@@ -113,6 +75,7 @@ public class NetworkProvider {
             if (s == null) {
                 // INVALID PAIRKEY
             } else {
+                // UNUSED RETURNED VALUE ROBOT
                 parseRobot(s);
             }
 
@@ -129,7 +92,7 @@ public class NetworkProvider {
         System.out.println("RESPONSE CODE IN PROVIDER : " + RESPONSE_CODE);
 
         if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
-            // SUCCESFULLY PAIRED
+            // SUCCESSFULLY PAIRED
             return response;
         }
         else {
@@ -167,5 +130,51 @@ public class NetworkProvider {
         OAuthToken token = new OAuthToken();
         token.setAccess_token(responseObject.getString("access_token"));
         return token;
+    }
+
+    public List<Robot> getRobotList() throws IOException, JSONException {
+        NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_LIST, HttpMethod.GET, null, userLocalStorage, robot_list);
+        String response = request.execute();
+        RESPONSE_CODE = request.getRESPONSE_CODE();
+
+        if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
+            //USER CAN BE USED LATER
+            User user = parseUser(response);
+
+            for (Robot robot : robots) {
+                System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
+            }
+            System.out.println("Size: " + robots.size());
+            return robots;
+
+        } else {
+            return null;
+            //PROBLEM WITH FETCHING ROBOT LIST
+        }
+    }
+
+    private User parseUser(String response) throws JSONException {
+        JSONObject responseObject = new JSONObject(response);
+        User user = new User();
+        user.setLogin(responseObject.getString("login"));
+        user.setCreateed(responseObject.getString("createed"));
+        user.setPassword(responseObject.getString("password"));
+        user.setToken(responseObject.getString("token"));
+        user.setUserId(responseObject.getString("userId"));
+
+        JSONArray robotArray = responseObject.getJSONArray("robots");
+        for (int i = 0; i < robotArray.length(); ++i) {
+            JSONObject robotObj = robotArray.getJSONObject(i);
+
+            Robot robot = new Robot(robotObj.getString("ip"),
+                    robotObj.getString("sn"),
+                    robotObj.getString("uuid"));
+
+            robots.add(robot);
+        }
+
+        user.setRobots(robots);
+
+        return user;
     }
 }
