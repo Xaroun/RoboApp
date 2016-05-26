@@ -10,21 +10,9 @@ import android.text.InputType;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import org.json.JSONException;
 
 import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import roboniania.com.roboniania_android.activities.RobotListActivity;
-import roboniania.com.roboniania_android.api.RoboService;
-import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 

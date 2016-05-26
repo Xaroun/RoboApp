@@ -32,7 +32,6 @@ public class GameListActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
     private Handler handler;
-//    private PairingRobot pairingRobot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

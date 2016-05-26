@@ -53,6 +53,7 @@ public class AdapterSideList extends RecyclerView.Adapter<AdapterSideList.MyView
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             sideTitle = (TextView) itemView.findViewById(R.id.sideTitle);
             sidePic = (ImageView) itemView.findViewById(R.id.sideIcon);
         }

@@ -144,7 +144,6 @@ public class NetworkProvider {
             for (Robot robot : robots) {
                 System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
             }
-            System.out.println("Size: " + robots.size());
             return robots;
 
         } else {

@@ -54,6 +54,7 @@ public class AdapterGameList extends RecyclerView.Adapter<AdapterGameList.MyView
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             gameTitle = (TextView) itemView.findViewById(R.id.gameTitle);
             gamePic = (ImageView) itemView.findViewById(R.id.gameIcon);
         }

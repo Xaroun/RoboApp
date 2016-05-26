@@ -3,16 +3,15 @@
     package="roboniania.com.roboniania_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:supportsRtl="true"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,20 +19,41 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity" />
+            android:name=".activities.LoginActivity"
+            android:label="@string/app_name" />
         <activity
-            android:name=".activities.HomeActivity" />
+            android:name=".activities.HomeActivity"
+            android:label="Home" />
         <activity
-            android:name=".activities.RegisterActivity" />
+            android:name=".activities.RegisterActivity"
+            android:label="@string/app_name" />
         <activity
-            android:name=".activities.GameListActivity" />
+            android:name=".activities.GameListActivity"
+            android:label="Games" />
         <activity
-            android:name=".activities.EduListActivity" />
+            android:name=".activities.EduListActivity"
+            android:label="Education" />
         <activity
-            android:name=".activities.GameActivity" />
+            android:name=".activities.GameActivity"
+            android:label="Games">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.GameListActivity" />
+
+        </activity>
         <activity
-            android:name=".activities.EduActivity" />
-        <activity android:name=".activities.RobotListActivity"></activity>
+            android:name=".activities.EduActivity"
+            android:label="Education">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.EduListActivity" />
+
+        </activity>
+        <activity
+            android:name=".activities.RobotListActivity"
+            android:label="Robots"></activity>
     </application>
 
 </manifest>

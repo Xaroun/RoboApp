@@ -41,7 +41,6 @@ public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyVi
         Robot currentRobot = robots.get(position);
         holder.robotIp.setText(currentRobot.getIp());
         holder.robotSn.setText(currentRobot.getSn());
-//        holder.robotUuid.setText(currentRobot.getUuid());
 
     }
 
@@ -56,9 +55,9 @@ public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyVi
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             robotIp = (TextView) itemView.findViewById(R.id.robotIp);
             robotSn = (TextView) itemView.findViewById(R.id.robotSn);
-//            robotUuid = (TextView) itemView.findViewById(R.id.robotUuid);
         }
 
     }
