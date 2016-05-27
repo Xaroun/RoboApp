@@ -31,7 +31,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Context context;
     private Handler handler;
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private static String email;
 
+    public static String getEmail() {
+        return email;
+    }
 
     private Button loginBtn;
     private TextView signupLink;
@@ -95,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void sendResultForMainActivity() {
         Intent intent = new Intent();
+        email = emailText.getText().toString();
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

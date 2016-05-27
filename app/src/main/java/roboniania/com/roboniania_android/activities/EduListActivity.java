@@ -32,7 +32,6 @@ public class EduListActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Handler handler;
     private SharedPreferenceStorage userLocalStorage;
-//    private PairingRobot pairingRobot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +40,6 @@ public class EduListActivity extends AppCompatActivity {
         context = getApplicationContext();
         handler = new Handler();
         userLocalStorage = new SharedPreferenceStorage(this);
-//        pairingRobot = new PairingRobot(this);
 
         initializeList();
 

@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         handler = new Handler();
 
         hello = (TextView) findViewById(R.id.hello);
-//        hello.setText("Hello " + getIntent().getExtras().getString("EMAIL"));
+        hello.setText("Hello " + LoginActivity.getEmail());
 
         avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setOnClickListener(this);

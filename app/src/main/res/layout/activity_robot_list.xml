@@ -18,56 +18,50 @@
             android:id="@+id/app_bar"
             layout="@layout/app_bar" />
 
-        <View
-            android:id="@+id/firstLine"
-            android:layout_width="match_parent"
-            android:layout_height="2dip"
-            android:layout_marginTop="1dp"
-            android:background="#000000" />
+        <!--<View-->
+            <!--android:id="@+id/firstLine"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dip"-->
+            <!--android:layout_marginTop="1dp"-->
+            <!--android:background="#000000" />-->
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/ipLabel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="70dp"
-                android:layout_marginRight="80dp"
-                android:text="IP"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                android:text="IP ADDRESS"
+                android:layout_weight="1"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/snLabel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/ipLabel"
+                android:gravity="center"
+                android:layout_weight="1"
                 android:text="SERIAL NUMBER"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/noConnected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NO CONNECTED ROBOTS"
-                android:layout_centerHorizontal="true"
-                android:textColor="#000000"
-                android:visibility="invisible"
-                android:textSize="25sp"
-                android:textStyle="bold" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <View
-            android:id="@+id/secondLine"
-            android:layout_width="match_parent"
-            android:layout_height="2dip"
-            android:background="#000000" />
+        <!--<View-->
+            <!--android:id="@+id/secondLine"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dip"-->
+            <!--android:background="#000000" />-->
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
