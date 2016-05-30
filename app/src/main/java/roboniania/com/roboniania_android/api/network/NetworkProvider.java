@@ -132,7 +132,7 @@ public class NetworkProvider {
         return token;
     }
 
-    public List<Robot> getRobotList() throws IOException, JSONException {
+    public void getRobotList(OnResponseReceivedListener listener) throws IOException, JSONException {
         NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_LIST, HttpMethod.GET, null, userLocalStorage, robot_list);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
@@ -144,12 +144,11 @@ public class NetworkProvider {
             for (Robot robot : robots) {
                 System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
             }
-            return robots;
 
         } else {
-            return null;
             //PROBLEM WITH FETCHING ROBOT LIST
         }
+        listener.onResponseReceived();
     }
 
     private User parseUser(String response) throws JSONException {

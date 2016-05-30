@@ -15,28 +15,18 @@
         android:orientation="vertical"
         tools:context=".activities.HomeActivity">
 
-
         <include
             android:id="@+id/app_bar"
             layout="@layout/app_bar" />
 
-        <android.support.v7.widget.CardView
-            android:layout_marginTop="10dp"
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            card_view:cardCornerRadius="85dp"
-            card_view:cardUseCompatPadding="true">
             <ImageView
                 android:id="@+id/avatar"
-                android:layout_width="170dp"
-                android:layout_height="170dp"
+                android:layout_marginTop="30dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_gravity="center"
                 android:clickable="true"
                 android:src="@drawable/avatar" />
-        </android.support.v7.widget.CardView>
-
 
         <TextView
             android:id="@+id/hello"
@@ -53,42 +43,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:layout_marginBottom="30dp"
             android:orientation="horizontal">
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                card_view:cardCornerRadius="20dp"
-                card_view:cardUseCompatPadding="true"
-                android:layout_weight="1"
-                android:foreground="?android:attr/selectableItemBackground">
 
             <ImageView
                 android:id="@+id/games"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
                 android:clickable="true"
                 android:src="@drawable/games_label" />
-            </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                card_view:cardCornerRadius="20dp"
-                android:layout_weight="1"
-                card_view:cardUseCompatPadding="true"
-                android:foreground="?android:attr/selectableItemBackground">
             <ImageView
                 android:id="@+id/edu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
                 android:clickable="true"
                 android:src="@drawable/edu_label" />
-            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 

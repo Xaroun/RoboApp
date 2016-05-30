@@ -22,11 +22,17 @@ import roboniania.com.roboniania_android.api.model.User;
 public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyViewHolder> {
 
     private LayoutInflater inflater;
-    private List<Robot> robots = Collections.emptyList();
+    private List<Robot> robots;
 
     public AdapterRobotList(Context context, List<Robot> robots) {
         inflater = LayoutInflater.from(context);
         this.robots = robots;
+    }
+
+    public void swap(List<Robot> robots) {
+        this.robots.clear();
+        this.robots.addAll(robots);
+        notifyDataSetChanged();
     }
 
     @Override

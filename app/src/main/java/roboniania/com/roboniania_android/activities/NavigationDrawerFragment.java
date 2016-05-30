@@ -32,7 +32,7 @@ public class NavigationDrawerFragment extends Fragment {
     private Context context;
 
     public NavigationDrawerFragment() {
-        // Required empty public constructor
+        //nop
     }
 
 
@@ -68,8 +68,6 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(i);
                 break;
             case 1:
-//                i = new Intent(context, HomeActivity.class);
-//                startActivity(i);
                 System.out.println("My Account");
                 break;
             case 2:
@@ -77,8 +75,6 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(i);
                 break;
             case 3:
-//                i = new Intent(context, HomeActivity.class);
-//                startActivity(i);
                 System.out.println("Settings");
                 break;
         }

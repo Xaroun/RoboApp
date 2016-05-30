@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Context context;
     private Handler handler;
     private static final String TAG = LoginActivity.class.getSimpleName();
+
     private static String email;
 
     public static String getEmail() {
@@ -120,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         @Override
                         public void run() {
-//                            Log.d(TAG, "RESPONSE CODE:  " + networkProvider.getRESPONSE_CODE());
                             if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
                                 sendResultForMainActivity();
                             } else {
@@ -133,9 +133,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d(TAG, "IO Exception.");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Problems with JSON.");
         }
 
     }

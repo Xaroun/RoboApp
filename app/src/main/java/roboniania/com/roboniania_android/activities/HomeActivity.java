@@ -37,7 +37,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView hello;
     private Toolbar toolbar;
     private Handler handler;
-    private static final String TAG = HomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

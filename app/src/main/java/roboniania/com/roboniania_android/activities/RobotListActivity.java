@@ -40,7 +40,9 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     private AdapterRobotList adapterRobotList;
     private List<Robot> robotsDownloaded = new ArrayList<>();
     private Toolbar toolbar;
+    private Context context;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private static final String TAG = RobotListActivity.class.getSimpleName();
     private Handler handler;
 
     @Override
@@ -49,6 +51,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         setContentView(R.layout.activity_robot_list);
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();
+        context = getApplicationContext();
 
         //SETTING UP SWIPE REFRESH LAYOUT
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
@@ -64,22 +67,14 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
-        initializeList();
-    }
-
-    private void initializeList() {
         robotsList = (RecyclerView) findViewById(R.id.recyclerList);
-        getRobotList();
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        adapterRobotList = new AdapterRobotList(this, robotsDownloaded);
+        adapterRobotList = new AdapterRobotList(context, robotsDownloaded);
         robotsList.setAdapter(adapterRobotList);
-        robotsList.setLayoutManager(new LinearLayoutManager(this));
+        robotsList.setLayoutManager(new LinearLayoutManager(context));
+
+        getRobotList();
     }
+
 
 
     public void getRobotList() {
@@ -95,17 +90,28 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     private void downloadRobotList() {
         final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
         try {
-            robotsDownloaded = networkProvider.getRobotList();
+            networkProvider.getRobotList(new NetworkProvider.OnResponseReceivedListener() {
+                @Override
+                public void onResponseReceived() {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapterRobotList.swap(networkProvider.getRobots());
+                        }
+                    });
+
+                }
+            });
+            robotsDownloaded.addAll(networkProvider.getRobots());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d(TAG, "IO Exception.");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Problems with JSON.");
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
@@ -124,7 +130,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         robotsDownloaded.clear();
-        initializeList();
+        getRobotList();
         swipeRefreshLayout.setRefreshing(false);
     }
 
