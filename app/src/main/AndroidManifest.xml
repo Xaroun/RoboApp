@@ -23,6 +23,7 @@
             android:label="@string/app_name" />
         <activity
             android:name=".activities.HomeActivity"
+            android:theme="@style/AppTheme.Custom"
             android:label="Home" />
         <activity
             android:name=".activities.RegisterActivity"

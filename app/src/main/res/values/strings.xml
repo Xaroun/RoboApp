@@ -10,4 +10,6 @@
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="button_games">Games</string>
+    <string name="button_edu">education</string>
 </resources>

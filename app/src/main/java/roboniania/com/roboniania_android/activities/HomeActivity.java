@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,10 +34,11 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SharedPreferenceStorage userLocalStorage;
-    private ImageView avatar, games, edu;
+    private ImageView avatar;
     private TextView hello;
     private Toolbar toolbar;
     private Handler handler;
+    private Button games, edu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +53,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setOnClickListener(this);
 
-        games = (ImageView) findViewById(R.id.games);
+        games = (Button) findViewById(R.id.games);
         games.setOnClickListener(this);
 
-        edu = (ImageView) findViewById(R.id.edu);
+        edu = (Button) findViewById(R.id.edu);
         edu.setOnClickListener(this);
 
         //SETTING UP TOOLBAR
