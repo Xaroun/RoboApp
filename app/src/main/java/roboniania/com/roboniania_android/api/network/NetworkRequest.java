@@ -1,9 +1,12 @@
 package roboniania.com.roboniania_android.api.network;
 
+import android.util.Base64;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -11,11 +14,11 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class NetworkRequest {
 
-    private final String url;
+    private String url;
     private final HttpMethod method;
     private final String body;
     private SharedPreferenceStorage userLocalStorage;
-    private String login, password, pairKey, type;
+    private String pairKey, type;
     private int RESPONSE_CODE;
 
     public NetworkRequest(String url, HttpMethod method, String body, SharedPreferenceStorage userLocalStorage, String type) {
@@ -26,12 +29,10 @@ public class NetworkRequest {
         this.type = type;
     }
 
-    public NetworkRequest(String url, HttpMethod method, String body, String login, String password, String type) {
+    public NetworkRequest(String url, HttpMethod method, String body, String type) {
         this.url = url;
         this.method = method;
         this.body = body;
-        this.login = login;
-        this.password = password;
         this.type = type;
     }
 
@@ -51,8 +52,18 @@ public class NetworkRequest {
     private void setHeaders(String type, HttpURLConnection conn) {
         switch(type) {
             case "login_code":
-                conn.setRequestProperty("Login", login);
-                conn.setRequestProperty("Password",password);
+                String app_id = "resource-server:";
+                byte[] data = new byte[0];
+                try {
+                    data = app_id.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                String base64 = "Basic " +  Base64.encodeToString(data, Base64.DEFAULT);
+                conn.setRequestProperty("Authorization", base64);
+                conn.setDoOutput(true);
+
                 break;
             case "robot_pair":
                 conn.setRequestProperty("Pair-Key",pairKey);

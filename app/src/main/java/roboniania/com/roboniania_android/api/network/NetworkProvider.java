@@ -23,6 +23,7 @@ import java.util.List;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
+import roboniania.com.roboniania_android.api.model.Oauth2;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
@@ -110,25 +111,28 @@ public class NetworkProvider {
     }
 
     public void login(String login, String password, OnResponseReceivedListener listener) throws IOException, JSONException {
-        NetworkRequest request = new NetworkRequest(RoboService.OAUTH, HttpMethod.GET, null, login, password, login_code);
+        NetworkRequest request = new NetworkRequest(RoboService.OAUTH2 + "?grant_type=password&username="+login+"&password="+password, HttpMethod.POST, null, login_code);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
 
         if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
-            OAuthToken accessToken = parseToken(response);
+            Oauth2 oauth2 = parseToken(response);
 
             // Save token to shared prefernces
-            userLocalStorage.storeAccessToken(accessToken.getAccess_token());
+            userLocalStorage.storeAccessToken(oauth2.getAccess_token());
             userLocalStorage.setUserLoggedIn(true);
-            System.out.println("TOKEN: " + accessToken.getAccess_token());
+            System.out.println("TOKEN: " + oauth2.getAccess_token());
         }
         listener.onResponseReceived();
     }
 
-    private OAuthToken parseToken(String response) throws JSONException{
+    private Oauth2 parseToken(String response) throws  JSONException {
         JSONObject responseObject = new JSONObject(response);
-        OAuthToken token = new OAuthToken();
-        token.setAccess_token(responseObject.getString("access_token"));
+        Oauth2 token = new Oauth2(responseObject.getString("access_token"),
+                responseObject.getString("token_type"),
+                responseObject.getString("refresh_token"),
+                responseObject.getInt("expires_in"),
+                responseObject.getString("scope"));
         return token;
     }
 
