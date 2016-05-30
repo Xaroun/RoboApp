@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import org.json.JSONException;
 
@@ -33,7 +34,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private static String email;
-
     public static String getEmail() {
         return email;
     }
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button loginBtn;
     private TextView signupLink;
     private EditText emailText, passwordText;
-
+    private ViewAnimator animator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         emailText = (EditText) findViewById(R.id.input_email);
         passwordText = (EditText) findViewById(R.id.input_password);
 
+        animator = (ViewAnimator) findViewById(R.id.animator);
+        animator.setDisplayedChild(1);
+
         userLocalStorage = new SharedPreferenceStorage(this);
     }
 
@@ -69,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.login_button:
+                animator.setDisplayedChild(0);
                 new Thread(new Runnable() {
 
                     @Override
@@ -124,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
                                 sendResultForMainActivity();
                             } else {
+                                animator.setDisplayedChild(1);
                                 Log.d(TAG, "Wrong credentials.");
                                 Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
                             }

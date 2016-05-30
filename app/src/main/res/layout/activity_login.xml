@@ -10,63 +10,19 @@
     tools:context=".activities.LoginActivity"
     android:orientation="vertical">
 
-    <ImageView
-        android:src="@drawable/robo"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <!-- Email Label -->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_email"
-        android:layout_marginTop="20dp"
+    <ViewAnimator
+        android:id="@+id/animator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/input_email"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="e-mail"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <!-- Password Label -->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
-
-        <EditText
-            android:id="@+id/input_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="password"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:padding="12dp"
-        android:text="Login"/>
+            android:layout_gravity="center" />
 
 
-    <TextView android:id="@+id/signup_link"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="@string/no_account"
-        android:gravity="center"
-        android:textSize="16sp"/>
+        <include layout="@layout/content_login" />
+
+    </ViewAnimator>
 
 </LinearLayout>
