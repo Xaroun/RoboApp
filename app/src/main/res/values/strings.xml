@@ -20,4 +20,5 @@
     <string name="empty_pass">You must type both old and new password</string>
     <string name="wrong_pass">Your old password is invalid</string>
     <string name="successfully_changed">You have successfully changed your password</string>
+    <string name="successfully_logged_out">Successfully logged out.</string>
 </resources>

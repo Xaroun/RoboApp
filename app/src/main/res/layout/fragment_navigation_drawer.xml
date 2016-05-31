@@ -6,7 +6,7 @@
     android:clickable="true"
     tools:context="roboniania.com.roboniania_android.activities.NavigationDrawerFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/containerSideImage">
@@ -14,8 +14,26 @@
         <ImageView
             android:layout_width="280dp"
             android:layout_height="140dp"
-            android:src="@drawable/avatar2"/>
-    </LinearLayout>
+            android:src="@drawable/avatar2" />
+
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="140dp"
+            android:gravity="right">
+            <ImageView
+                android:id="@+id/logout"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/logout2"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="140dp"

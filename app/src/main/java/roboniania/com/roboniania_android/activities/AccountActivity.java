@@ -1,9 +1,11 @@
 package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -24,7 +26,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
-import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.api.network.NetworkProvider;
@@ -41,6 +42,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private ViewAnimator animator;
     private Button dismiss, confirmChange;
     private EditText oldPass, newPass;
+    private ImageView logoutButton;
     private Context context;
 
     @Override
@@ -69,6 +71,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         confirmChange.setOnClickListener(this);
         oldPass = (EditText) findViewById(R.id.input_old_password);
         newPass = (EditText) findViewById(R.id.input_new_password);
+        logoutButton = (ImageView) findViewById(R.id.logout);
+        logoutButton.setOnClickListener(this);
 
         //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -166,7 +170,34 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     //PASSWORD EMPTY
                 }
                 break;
+            case R.id.logout:
+                showLogoutDialog();
+                break;
         }
+    }
+
+    private void showLogoutDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Are you sure you want to logout?");
+        alert.setTitle("Signing out..");
+
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                userLocalStorage.clearUserData();
+                Toast.makeText(context, R.string.successfully_logged_out, Toast.LENGTH_SHORT);
+                Intent i = new Intent(context, LoginActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
+
+        alert.create();
+        alert.show();
     }
 
     private void startChanging(String oldPassword, String newPassword) {
