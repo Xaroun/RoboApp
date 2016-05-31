@@ -68,7 +68,8 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(i);
                 break;
             case 1:
-                System.out.println("My Account");
+                i = new Intent(context, AccountActivity.class);
+                startActivity(i);
                 break;
             case 2:
                 i = new Intent(context, RobotListActivity.class);

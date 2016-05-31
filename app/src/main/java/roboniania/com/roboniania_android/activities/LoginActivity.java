@@ -32,12 +32,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Context context;
     private Handler handler;
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-    private static String email;
-    public static String getEmail() {
-        return email;
-    }
-
     private Button loginBtn;
     private TextView signupLink;
     private EditText emailText, passwordText;
@@ -47,6 +41,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        initComponents();
+    }
+
+    private void initComponents() {
         context = getApplicationContext();
         handler = new Handler();
 
@@ -104,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void sendResultForMainActivity() {
         Intent intent = new Intent();
-        email = emailText.getText().toString();
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

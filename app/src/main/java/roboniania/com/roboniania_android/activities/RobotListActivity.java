@@ -49,6 +49,12 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot_list);
+
+        initComponents();
+        getRobotList();
+    }
+
+    private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();
         context = getApplicationContext();
@@ -67,14 +73,12 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
+        //SETTING UP RECYCLER VIEW
         robotsList = (RecyclerView) findViewById(R.id.recyclerList);
         adapterRobotList = new AdapterRobotList(context, robotsDownloaded);
         robotsList.setAdapter(adapterRobotList);
         robotsList.setLayoutManager(new LinearLayoutManager(context));
-
-        getRobotList();
     }
-
 
 
     public void getRobotList() {

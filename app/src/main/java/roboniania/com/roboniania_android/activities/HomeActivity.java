@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
+import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
@@ -39,16 +40,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Toolbar toolbar;
     private Handler handler;
     private Button games, edu;
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        initComponents();
+        getUser();
+    }
+
+    private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();
 
+
         hello = (TextView) findViewById(R.id.hello);
-        hello.setText("Hello " + LoginActivity.getEmail());
 
         avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setOnClickListener(this);
@@ -84,6 +92,45 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void getUser() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                downloadUser();
+            }
+        }).start();
+    }
+
+    private void downloadUser() {
+        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
+        try {
+            networkProvider.downloadUser(new NetworkProvider.OnResponseReceivedListener() {
+
+                @Override
+                public void onResponseReceived() {
+                    handler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
+                                User user = networkProvider.getUser();
+                                hello.setText("Hi " + user.getLogin() + "!");
+                            } else {
+                                Log.d(TAG, "ups");
+                            }
+                        }
+                    });
+                }
+            });
+
+        } catch (IOException e) {
+            Log.d(TAG, "IO Exception.");
+        } catch (JSONException e) {
+            Log.d(TAG, "Problems with JSON.");
+        }
+    }
+
     private void startEduActivity() {
         Intent intent = new Intent(this, EduListActivity.class);
         startActivity(intent);
@@ -95,7 +142,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startAccountActivity() {
-        System.out.println("MyAccount");
+        Intent intent = new Intent(this, AccountActivity.class);
+        startActivity(intent);
     }
 
 

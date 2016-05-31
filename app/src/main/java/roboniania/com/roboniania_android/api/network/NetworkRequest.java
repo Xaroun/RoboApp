@@ -15,13 +15,23 @@ public class NetworkRequest {
     private final HttpMethod method;
     private final String body;
     private SharedPreferenceStorage userLocalStorage;
-    private String login, password, pairKey, type;
+    private String login, password, pairKey, type, oldPass, newPass;
     private int RESPONSE_CODE;
 
     public NetworkRequest(String url, HttpMethod method, String body, SharedPreferenceStorage userLocalStorage, String type) {
         this.url = url;
         this.method = method;
         this.body = body;
+        this.userLocalStorage = userLocalStorage;
+        this.type = type;
+    }
+
+    public NetworkRequest(String url, HttpMethod method, String body, String oldPass, String newPass, SharedPreferenceStorage userLocalStorage, String type) {
+        this.url = url;
+        this.method = method;
+        this.body = body;
+        this.oldPass = oldPass;
+        this.newPass = newPass;
         this.userLocalStorage = userLocalStorage;
         this.type = type;
     }
@@ -58,9 +68,13 @@ public class NetworkRequest {
                 conn.setRequestProperty("Pair-Key",pairKey);
                 conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
                 break;
-            case "robot_list":
+            case "token":
                 conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
                 break;
+            case "change_code":
+                conn.setRequestProperty("oldPass", oldPass);
+                conn.setRequestProperty("newPass", newPass);
+                conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
         }
     }
 

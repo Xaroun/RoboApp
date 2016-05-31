@@ -37,6 +37,11 @@ public class GameListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        initComponents();
+    }
+
+    private void initComponents() {
         context = getApplicationContext();
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();

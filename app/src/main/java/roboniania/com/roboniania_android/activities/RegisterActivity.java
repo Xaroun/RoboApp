@@ -21,13 +21,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        initComponents();
+    }
+
+    private void initComponents() {
+
         //Initialize components
         registerBtn = (Button) findViewById(R.id.register_button);
         registerBtn.setOnClickListener(this);
 
         loginLink = (TextView) findViewById(R.id.login_link);
         loginLink.setOnClickListener(this);
-
     }
 
     @Override

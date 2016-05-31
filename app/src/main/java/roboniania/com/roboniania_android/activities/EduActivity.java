@@ -27,6 +27,11 @@ public class EduActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edu);
+
+        initComponents();
+    }
+
+    private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
         handler = new Handler();
 

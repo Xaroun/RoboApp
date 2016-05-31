@@ -32,14 +32,18 @@ public class NetworkProvider {
     private final Context context;
     private SharedPreferenceStorage userLocalStorage;
 
-    private final List<User> users = new ArrayList<>();
     private final List<Robot> robots = new ArrayList<>();
+    private User user;
 
     private static final String login_code = "login_code";
     private static final String robot_pair = "robot_pair";
-    private static final String robot_list = "robot_list";
+    private static final String token = "token";
+    private static final String change_code = "change_code";
     private int RESPONSE_CODE;
 
+    public User getUser() {
+        return user;
+    }
 
     public NetworkProvider(Context context, SharedPreferenceStorage userLocalStorage) {
         this.context = context;
@@ -133,7 +137,7 @@ public class NetworkProvider {
     }
 
     public void getRobotList(OnResponseReceivedListener listener) throws IOException, JSONException {
-        NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_LIST, HttpMethod.GET, null, userLocalStorage, robot_list);
+        NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_LIST, HttpMethod.GET, null, userLocalStorage, token);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
 
@@ -174,5 +178,35 @@ public class NetworkProvider {
         user.setRobots(robots);
 
         return user;
+    }
+
+    public void downloadUser(OnResponseReceivedListener listener) throws IOException, JSONException {
+        NetworkRequest request = new NetworkRequest(RoboService.MY_PROFILE, HttpMethod.GET, null, userLocalStorage, token);
+        String response = request.execute();
+        RESPONSE_CODE = request.getRESPONSE_CODE();
+
+        if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
+            user = parseUser(response);
+        } else {
+            //PROBLEM WITH MY ACC
+            user = null;
+        }
+
+        listener.onResponseReceived();
+    }
+
+    public void changePassword(String oldPassword, String newPassword, OnResponseReceivedListener listener) throws IOException, JSONException {
+        NetworkRequest request = new NetworkRequest(RoboService.EDIT_PROFILE, HttpMethod.PUT, null, oldPassword, newPassword, userLocalStorage, change_code);
+        String response = request.execute();
+        RESPONSE_CODE = request.getRESPONSE_CODE();
+
+        if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
+            user = parseUser(response);
+        } else {
+            //PROBLEM WITH MY ACC
+            user = null;
+        }
+
+        listener.onResponseReceived();
     }
 }
