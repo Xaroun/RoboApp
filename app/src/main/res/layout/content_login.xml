@@ -22,6 +22,7 @@
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
             android:inputType="textEmailAddress"
             android:hint="login"/>
 
@@ -39,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:textColor="@color/cardview_dark_background"
             android:hint="password"/>
 
     </android.support.design.widget.TextInputLayout>

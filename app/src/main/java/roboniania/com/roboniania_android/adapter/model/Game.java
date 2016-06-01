@@ -8,6 +8,17 @@ import java.io.Serializable;
 public class Game implements Serializable {
     private int iconId;
     private String title;
+    private int descriptionId;
+
+
+
+    public int getDescriptionId() {
+        return descriptionId;
+    }
+
+    public void setDescriptionId(int descriptionId) {
+        this.descriptionId = descriptionId;
+    }
 
     public int getIconId() {
         return iconId;

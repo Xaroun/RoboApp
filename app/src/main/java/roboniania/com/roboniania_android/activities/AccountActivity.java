@@ -184,7 +184,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 userLocalStorage.clearUserData();
-                Toast.makeText(context, R.string.successfully_logged_out, Toast.LENGTH_SHORT);
+                Toast.makeText(context, R.string.successfully_logged_out, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(context, LoginActivity.class);
                 startActivity(i);
                 finish();

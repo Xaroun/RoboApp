@@ -29,6 +29,7 @@
             android:id="@+id/input_email_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
             android:inputType="textEmailAddress"
             android:hint="login"/>
 
@@ -45,6 +46,7 @@
             android:id="@+id/input_password_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
             android:inputType="textPassword"
             android:hint="password"/>
 
@@ -61,6 +63,7 @@
             android:id="@+id/input_password_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
             android:inputType="textPassword"
             android:hint="confirm password"/>
 

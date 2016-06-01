@@ -21,4 +21,9 @@
     <string name="wrong_pass">Your old password is invalid</string>
     <string name="successfully_changed">You have successfully changed your password</string>
     <string name="successfully_logged_out">Successfully logged out.</string>
+    <string name="game_tictac">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ornare sollicitudin dui ut aliquet. Maecenas ultrices lorem quis dolor malesuada elementum. Cras ac magna a metus tempor finibus. Integer tempus fringilla elit, et mollis mauris porta sed. Aenean at turpis lacinia, rutrum neque eget, venenatis neque.</string>
+    <string name="game_tag">Phasellus et rutrum ipsum. Maecenas tempor faucibus convallis. Nullam tellus erat, mattis non felis sed, posuere iaculis nibh. Phasellus elit enim, hendrerit eget vulputate accumsan, tempor nec ipsum. Pellentesque sit amet ligula ut magna convallis mattis at quis arcu. Suspendisse potenti.</string>
+    <string name="game_moving">Etiam imperdiet nulla massa, in hendrerit metus volutpat eu. Nam fermentum enim at enim vestibulum elementum. In ut odio eros. Aliquam erat volutpat. Nullam velit odio, congue eget pulvinar at, tempor eu justo. Vestibulum consequat ante vel efficitur imperdiet. Nunc cursus sollicitudin sapien, sed varius ex molestie nec.</string>
+    <string name="play">PLAY</string>
+
 </resources>

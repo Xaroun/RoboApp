@@ -94,10 +94,17 @@ public class GameListActivity extends AppCompatActivity {
                 "MOVING"
         };
 
+        int[] descriptions = {
+                R.string.game_tictac,
+                R.string.game_tag,
+                R.string.game_moving
+        };
+
         for (int i = 0; i < icons.length && i <titles.length; i++) {
             Game currentGame = new Game();
             currentGame.setIconId(icons[i]);
             currentGame.setTitle(titles[i]);
+            currentGame.setDescriptionId(descriptions[i]);
             games.add(currentGame);
         }
 

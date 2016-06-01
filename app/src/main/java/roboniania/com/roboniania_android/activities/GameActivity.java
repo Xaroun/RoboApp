@@ -48,10 +48,12 @@ public class GameActivity extends AppCompatActivity {
 
     private void showGame(Game game) {
         TextView title = (TextView) findViewById(R.id.gameDetailTitle);
-        ImageView photo = (ImageView) findViewById(R.id.gameDetailIcon);
+        ImageView icon = (ImageView) findViewById(R.id.gameDetailIcon);
+        TextView description = (TextView) findViewById(R.id.gameDescription);
 
         title.setText(game.getTitle());
-        photo.setImageResource(game.getIconId());
+        icon.setImageResource(game.getIconId());
+        description.setText(game.getDescriptionId());
     }
 
 

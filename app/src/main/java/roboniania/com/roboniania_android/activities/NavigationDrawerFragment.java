@@ -165,7 +165,7 @@ public class NavigationDrawerFragment extends Fragment {
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 userLocalStorage.clearUserData();
-                Toast.makeText(context, R.string.successfully_logged_out, Toast.LENGTH_SHORT);
+                Toast.makeText(context, R.string.successfully_logged_out, Toast.LENGTH_SHORT).show();
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 Intent i = new Intent(context, LoginActivity.class);
                 startActivity(i);
