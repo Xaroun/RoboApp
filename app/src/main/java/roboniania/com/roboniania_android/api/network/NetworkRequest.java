@@ -36,6 +36,13 @@ public class NetworkRequest {
         this.type = type;
     }
 
+    public NetworkRequest(String url, HttpMethod method, String body,  String type) {
+        this.url = url;
+        this.method = method;
+        this.body = body;
+        this.type = type;
+    }
+
     public NetworkRequest(String url, HttpMethod method, String body, String login, String password, String type) {
         this.url = url;
         this.method = method;
@@ -75,6 +82,9 @@ public class NetworkRequest {
                 conn.setRequestProperty("oldPass", oldPass);
                 conn.setRequestProperty("newPass", newPass);
                 conn.setRequestProperty("Token", userLocalStorage.getAccessToken());
+            default:
+                break;
+
         }
     }
 

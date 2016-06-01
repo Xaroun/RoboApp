@@ -4,16 +4,16 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:src="@drawable/robo"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_marginTop="30dp"
+        android:layout_width="280dp"
+        android:layout_height="100dp"
         android:layout_gravity="center" />
 
     <!-- Email Label -->
     <android.support.design.widget.TextInputLayout
+        android:layout_marginTop="50dp"
         android:id="@+id/input_layout_email"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">

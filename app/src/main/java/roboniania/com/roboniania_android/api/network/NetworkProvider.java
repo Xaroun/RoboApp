@@ -34,11 +34,13 @@ public class NetworkProvider {
 
     private final List<Robot> robots = new ArrayList<>();
     private User user;
+    private String uuid;
 
     private static final String login_code = "login_code";
     private static final String robot_pair = "robot_pair";
     private static final String token = "token";
     private static final String change_code = "change_code";
+    private static final String play_code = "play_code";
     private int RESPONSE_CODE;
 
     public User getUser() {
@@ -205,6 +207,31 @@ public class NetworkProvider {
         } else {
             //PROBLEM WITH MY ACC
             user = null;
+        }
+
+        listener.onResponseReceived();
+    }
+
+    public void startPlaying(OnResponseReceivedListener listener) throws IOException, JSONException {
+        getRobotList(new OnResponseReceivedListener() {
+            @Override
+            public void onResponseReceived() {
+               uuid = getRobots().get(0).getUuid();
+                System.out.println("robot uuid: "+uuid);
+            }
+        });
+
+        String url = RoboService.ROBOTS_PAIR + "/" + uuid + "/games/TIC_TAC_TOE";
+
+        NetworkRequest request = new NetworkRequest(url, HttpMethod.GET, null, play_code);
+        String response = request.execute();
+        RESPONSE_CODE = request.getRESPONSE_CODE();
+
+        if (RESPONSE_CODE == 204) {
+            System.out.println("ROBOT IS PLAYING");
+        } else {
+            //PROBLEM WITH MY ACC
+            System.out.println("ROBOT KAPUTT");
         }
 
         listener.onResponseReceived();
