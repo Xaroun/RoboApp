@@ -16,50 +16,62 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar" />
 
-        <ImageView
-            android:id="@+id/logout"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_gravity="right"
-            android:src="@drawable/logout2"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/avatar"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:src="@drawable/avatar"
-            android:layout_marginBottom="30dp"
-            app:civ_border_width="2dp"
-            app:civ_border_color="@color/colorPrimary"/>
-
-
-        <include
-            layout="@layout/view_created"/>
-
-        <include
-            layout="@layout/view_login"/>
-
-        <include
-            layout="@layout/view_password"/>
-
-        <ViewAnimator
-            android:id="@+id/animator"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <include
-                layout="@layout/view_change_password"/>
+                <ImageView
+                    android:id="@+id/logout"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_gravity="right"
+                    android:src="@drawable/logout2"/>
 
-        </ViewAnimator>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:src="@drawable/avatar"
+                    android:layout_marginBottom="30dp"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@color/colorPrimary"/>
+
+
+                <include
+                    layout="@layout/view_created"/>
+
+                <include
+                    layout="@layout/view_login"/>
+
+                <include
+                    layout="@layout/view_password"/>
+
+                <ViewAnimator
+                    android:id="@+id/animator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"/>
+
+                    <include
+                        layout="@layout/view_change_password"/>
+
+                </ViewAnimator>
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
