@@ -1,5 +1,7 @@
 package roboniania.com.roboniania_android.api.network;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +19,7 @@ public class NetworkRequest {
     private SharedPreferenceStorage userLocalStorage;
     private String login, password, pairKey, type, oldPass, newPass;
     private int RESPONSE_CODE;
+    private static final String TAG = NetworkRequest.class.getSimpleName();
 
     public NetworkRequest(String url, HttpMethod method, String body, SharedPreferenceStorage userLocalStorage, String type) {
         this.url = url;
@@ -99,14 +102,14 @@ public class NetworkRequest {
             conn.setRequestMethod(method.getMethod());
             conn.setDoInput(true);
             conn.setRequestProperty("Accept","application/json");
-            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
             setHeaders(type, conn);
             if (body != null) {
                 conn.getOutputStream().write(body.getBytes());
             }
             conn.connect();
             RESPONSE_CODE = conn.getResponseCode();
-            System.out.println("RESPONSE CODE IN REQUEST: " + RESPONSE_CODE);
+            Log.d(TAG, "RESPONSE CODE IN REQUEST: " + RESPONSE_CODE);
             if (RESPONSE_CODE == 202 || RESPONSE_CODE == 200) {
                 is = conn.getInputStream();
             } else {

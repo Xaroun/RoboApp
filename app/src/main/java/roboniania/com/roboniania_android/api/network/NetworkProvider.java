@@ -42,6 +42,7 @@ public class NetworkProvider {
     private static final String change_code = "change_code";
     private static final String play_code = "play_code";
     private int RESPONSE_CODE;
+    private static final String TAG = NetworkProvider.class.getSimpleName();
 
     public User getUser() {
         return user;
@@ -95,7 +96,7 @@ public class NetworkProvider {
         NetworkRequest request = new NetworkRequest(RoboService.ROBOTS_PAIR, HttpMethod.GET, null, userLocalStorage, pairKey, robot_pair);
         String response = request.execute();
         RESPONSE_CODE = request.getRESPONSE_CODE();
-        System.out.println("RESPONSE CODE IN PROVIDER : " + RESPONSE_CODE);
+        Log.d(TAG, "RESPONSE CODE IN PROVIDER : " + RESPONSE_CODE);
 
         if (RESPONSE_CODE == 200 || RESPONSE_CODE == 202) {
             // SUCCESSFULLY PAIRED
@@ -148,7 +149,7 @@ public class NetworkProvider {
             User user = parseUser(response);
 
             for (Robot robot : robots) {
-                System.out.println(robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
+                Log.d(TAG, robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
             }
 
         } else {
@@ -217,7 +218,7 @@ public class NetworkProvider {
             @Override
             public void onResponseReceived() {
                uuid = getRobots().get(0).getUuid();
-                System.out.println("robot uuid: "+uuid);
+                Log.d(TAG, "ROBOT UUID : "  + uuid);
             }
         });
 
@@ -228,10 +229,10 @@ public class NetworkProvider {
         RESPONSE_CODE = request.getRESPONSE_CODE();
 
         if (RESPONSE_CODE == 204) {
-            System.out.println("ROBOT IS PLAYING");
+            Log.d(TAG, "ROBOT IS PLAYING");
         } else {
             //PROBLEM WITH MY ACC
-            System.out.println("ROBOT KAPUTT");
+            Log.d(TAG, "ROBOT KAPUTT");
         }
 
         listener.onResponseReceived();
