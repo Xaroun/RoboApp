@@ -35,6 +35,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button play;
     private static final String TAG = GameActivity.class.getSimpleName();
     private Context context;
+    private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent i = getIntent();
-        Game game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
+        game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
     }
 
@@ -67,10 +68,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         TextView title = (TextView) findViewById(R.id.gameDetailTitle);
         ImageView icon = (ImageView) findViewById(R.id.gameDetailIcon);
         TextView description = (TextView) findViewById(R.id.gameDescription);
+        ImageView gamePic = (ImageView) findViewById(R.id.game_pic);
 
-        title.setText(game.getTitle());
+        title.setText(game.getTitleId());
         icon.setImageResource(game.getIconId());
         description.setText(game.getDescriptionId());
+        gamePic.setImageResource(game.getPhotoId());
     }
 
 
@@ -101,39 +104,76 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        startPlaying();
+                        switch(game.getTitleId()) {
+                            case R.string.label_tictac:
+//                                startPlayingTicTac();
+                                break;
+                            case R.string.label_tag:
+                                break;
+                            case R.string.label_moving:
+                                break;
+                            case R.string.label_follower:
+                                try {
+                                    startPlayingTicTac();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+
                     }
                 }).start();
                 break;
         }
     }
 
-    private void startPlaying() {
+    private void startPlayingTicTac() throws IOException, JSONException {
         final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
-        try {
-            networkProvider.startPlaying(new NetworkProvider.OnResponseReceivedListener() {
 
+        networkProvider.getRobotList(new NetworkProvider.OnResponseReceivedListener() {
+            @Override
+            public void onResponseReceived() {
+                // UPDATE ROBOT LIST IN NETWORK PROVIDER
+            }
+        });
+
+        if (networkProvider.getRobots().isEmpty()) {
+            handler.post(new Runnable() {
                 @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (networkProvider.getRESPONSE_CODE() == 204) {
-                                Log.d(TAG, "ROBOT IS PLAYING");
-                                Toast.makeText(context, "Robot just started game.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d(TAG, "UPS");
-                            }
-                        }
-                    });
+                public void run() {
+                    Toast.makeText(context, R.string.no_robots, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "No connected robots.");
                 }
             });
+        } else {
+            try {
+                networkProvider.startPlaying(new NetworkProvider.OnResponseReceivedListener() {
 
-        } catch (IOException e) {
-            Log.d(TAG, "IO Exception.");
-        } catch (JSONException e) {
-            Log.d(TAG, "Problems with JSON.");
+                    @Override
+                    public void onResponseReceived() {
+                        handler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if (networkProvider.getRESPONSE_CODE() == 204) {
+                                    Log.d(TAG, "ROBOT IS PLAYING");
+                                    Toast.makeText(context, "Robot just started game.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d(TAG, "UPS");
+                                }
+                            }
+                        });
+                    }
+                });
+
+            } catch (IOException e) {
+                Log.d(TAG, "IO Exception.");
+            } catch (JSONException e) {
+                Log.d(TAG, "Problems with JSON.");
+            }
         }
+
     }
 }

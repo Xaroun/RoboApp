@@ -25,5 +25,16 @@
     <string name="game_tag">Phasellus et rutrum ipsum. Maecenas tempor faucibus convallis. Nullam tellus erat, mattis non felis sed, posuere iaculis nibh. Phasellus elit enim, hendrerit eget vulputate accumsan, tempor nec ipsum. Pellentesque sit amet ligula ut magna convallis mattis at quis arcu. Suspendisse potenti.</string>
     <string name="game_moving">Etiam imperdiet nulla massa, in hendrerit metus volutpat eu. Nam fermentum enim at enim vestibulum elementum. In ut odio eros. Aliquam erat volutpat. Nullam velit odio, congue eget pulvinar at, tempor eu justo. Vestibulum consequat ante vel efficitur imperdiet. Nunc cursus sollicitudin sapien, sed varius ex molestie nec.</string>
     <string name="play">PLAY</string>
+    <string name="check_connection">Check your Internet connection and try again</string>
+    <string name="server_error">Server error, try again</string>
+    <string name="game_follower">In semper, lorem at porttitor suscipit, orci velit tempus turpis, eu ornare risus tellus in nibh. Ut rhoncus justo non mattis semper. Integer non posuere lacus. Morbi tristique rutrum consequat. Proin maximus nibh ac pulvinar cursus. Suspendisse ut faucibus lorem. Fusce ut purus nisl.</string>
+    <string name="label_tictac">TIC-TAC-TOE</string>
+    <string name="label_tag">TAG</string>
+    <string name="label_moving">MOVING</string>
+    <string name="label_follower">LINE FOLLOWER</string>
+    <string name="label_letters">LETTERS</string>
+    <string name="label_animals">ANIMALS</string>
+    <string name="label_english">LEARN ENGLISH</string>
+    <string name="no_robots">You have no connected robots</string>
 
 </resources>

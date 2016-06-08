@@ -37,7 +37,7 @@ public class AdapterEduList extends RecyclerView.Adapter<AdapterEduList.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Edu currentEdu = edus.get(position);
-        holder.eduTitle.setText(currentEdu.getTitle());
+        holder.eduTitle.setText(currentEdu.getTitleId());
         holder.eduPic.setImageResource(currentEdu.getIconId());
     }
 

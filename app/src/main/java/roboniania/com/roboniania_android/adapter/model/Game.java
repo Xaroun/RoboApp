@@ -7,10 +7,17 @@ import java.io.Serializable;
  */
 public class Game implements Serializable {
     private int iconId;
-    private String title;
+    private int titleId;
     private int descriptionId;
+    private int photoId;
 
+    public int getPhotoId() {
+        return photoId;
+    }
 
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
+    }
 
     public int getDescriptionId() {
         return descriptionId;
@@ -24,15 +31,15 @@ public class Game implements Serializable {
         return iconId;
     }
 
-    public String getTitle() {
-        return title;
+    public int getTitleId() {
+        return titleId;
     }
 
     public void setIconId(int iconId) {
         this.iconId = iconId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitleId(int titleId) {
+        this.titleId = titleId;
     }
 }

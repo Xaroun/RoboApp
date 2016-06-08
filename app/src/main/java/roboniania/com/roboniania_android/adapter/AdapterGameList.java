@@ -37,7 +37,7 @@ public class AdapterGameList extends RecyclerView.Adapter<AdapterGameList.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Game currentGame = games.get(position);
-        holder.gameTitle.setText(currentGame.getTitle());
+        holder.gameTitle.setText(currentGame.getTitleId());
         holder.gamePic.setImageResource(currentGame.getIconId());
 
     }

@@ -32,7 +32,7 @@ public class NetworkProvider {
     private final Context context;
     private SharedPreferenceStorage userLocalStorage;
 
-    private final List<Robot> robots = new ArrayList<>();
+    private List<Robot> robots = new ArrayList<>();
     private User user;
     private String uuid;
 
@@ -214,13 +214,9 @@ public class NetworkProvider {
     }
 
     public void startPlaying(OnResponseReceivedListener listener) throws IOException, JSONException {
-        getRobotList(new OnResponseReceivedListener() {
-            @Override
-            public void onResponseReceived() {
-               uuid = getRobots().get(0).getUuid();
-                Log.d(TAG, "ROBOT UUID : "  + uuid);
-            }
-        });
+
+        uuid = getRobots().get(0).getUuid();
+        Log.d(TAG, "ROBOT UUID : "  + uuid);
 
         String url = RoboService.ROBOTS_PAIR + "/" + uuid + "/games/TIC_TAC_TOE";
 

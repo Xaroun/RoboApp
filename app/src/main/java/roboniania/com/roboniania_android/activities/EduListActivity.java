@@ -88,16 +88,16 @@ public class EduListActivity extends AppCompatActivity {
                 R.drawable.language
         };
 
-        String[] titles = {
-                "LETTERS",
-                "ANIMALS",
-                "LEARN ENGLISH"
+        int[] titles = {
+                R.string.label_letters,
+                R.string.label_animals,
+                R.string.label_english
         };
 
         for (int i = 0; i < icons.length && i <titles.length; i++) {
             Edu currentEdu = new Edu();
             currentEdu.setIconId(icons[i]);
-            currentEdu.setTitle(titles[i]);
+            currentEdu.setTitleId(titles[i]);
             edus.add(currentEdu);
         }
 

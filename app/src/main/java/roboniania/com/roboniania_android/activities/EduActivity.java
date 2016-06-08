@@ -50,7 +50,7 @@ public class EduActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.eduDetailTitle);
         ImageView photo = (ImageView) findViewById(R.id.eduDetailIcon);
 
-        title.setText(edu.getTitle());
+        title.setText(edu.getTitleId());
         photo.setImageResource(edu.getIconId());
     }
 

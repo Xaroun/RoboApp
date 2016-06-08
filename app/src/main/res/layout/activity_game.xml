@@ -50,8 +50,9 @@
                         android:textColor="@color/cardview_dark_background"
                         android:text="TIC-TAC-TOE"
                         android:layout_width="match_parent"
+                        android:layout_gravity="center"
                         android:layout_height="wrap_content"
-                        android:textSize="35sp" />
+                        android:textSize="30sp" />
 
                 </LinearLayout>
 
@@ -65,8 +66,10 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:id="@+id/game_pic"
                         android:layout_width="290dp"
                         android:layout_height="200dp"
+                        android:padding="5dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:src="@drawable/tictac"/>

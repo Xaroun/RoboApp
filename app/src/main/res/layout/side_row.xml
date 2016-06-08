@@ -22,7 +22,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_home_black_48dp"/>
+            android:src="@drawable/account"/>
 
         <TextView
             android:id="@+id/sideTitle"

@@ -136,11 +136,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             });
 
         } catch (IOException e) {
-            Log.d(TAG, "IO Exception.");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    animator.setDisplayedChild(1);
+                    Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "IO Exception.");
+                }
+            });
         } catch (JSONException e) {
-            Log.d(TAG, "Problems with JSON.");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    animator.setDisplayedChild(1);
+                    Toast.makeText(context, R.string.server_error, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Problems with JSON.");
+                }
+            });
         }
-
     }
 
 

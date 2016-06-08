@@ -85,26 +85,37 @@ public class GameListActivity extends AppCompatActivity {
         int[] icons = {
                 R.drawable.tictactoe,
                 R.drawable.smile,
-                R.drawable.forward
+                R.drawable.moving,
+                R.drawable.follower
         };
 
-        String[] titles = {
-                "TIC-TAC-TOE",
-                "TAG",
-                "MOVING"
+        int[] titles = {
+                R.string.label_tictac,
+                R.string.label_tag,
+                R.string.label_moving,
+                R.string.label_follower
         };
 
         int[] descriptions = {
                 R.string.game_tictac,
                 R.string.game_tag,
-                R.string.game_moving
+                R.string.game_moving,
+                R.string.game_follower
+        };
+
+        int[] photos = {
+                R.drawable.tictac,
+                R.drawable.tag,
+                R.drawable.move,
+                R.drawable.linefollower
         };
 
         for (int i = 0; i < icons.length && i <titles.length; i++) {
             Game currentGame = new Game();
             currentGame.setIconId(icons[i]);
-            currentGame.setTitle(titles[i]);
+            currentGame.setTitleId(titles[i]);
             currentGame.setDescriptionId(descriptions[i]);
+            currentGame.setPhotoId(photos[i]);
             games.add(currentGame);
         }
 

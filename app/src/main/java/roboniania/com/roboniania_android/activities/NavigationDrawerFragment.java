@@ -102,10 +102,10 @@ public class NavigationDrawerFragment extends Fragment {
     public List<SideElement> getElements() {
         elements = new ArrayList<>();
         int[] icons = {
-                R.drawable.ic_home_black_48dp,
-                R.drawable.ic_account_circle_black_48dp,
-                R.drawable.ic_android_black_48dp,
-                R.drawable.ic_settings_applications_black_48dp
+                R.drawable.home,
+                R.drawable.account,
+                R.drawable.robot,
+                R.drawable.settings
 
         };
 
