@@ -169,6 +169,7 @@ public class NavigationDrawerFragment extends Fragment {
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 Intent i = new Intent(context, LoginActivity.class);
                 startActivity(i);
+                getActivity().finish();
             }
         });
 
