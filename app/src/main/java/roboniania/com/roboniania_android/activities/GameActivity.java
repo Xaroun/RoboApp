@@ -106,15 +106,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     public void run() {
                         switch(game.getTitleId()) {
                             case R.string.label_tictac:
-//                                startPlayingTicTac();
+//                                try {
+//                                    startPlaying("TIC_TAC_TOE");
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
                                 break;
                             case R.string.label_tag:
+                                try {
+                                    startPlaying("TAG");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
                             case R.string.label_moving:
                                 break;
                             case R.string.label_follower:
                                 try {
-                                    startPlayingTicTac();
+                                    startPlaying("LINE_FOLLOWER");
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 } catch (JSONException e) {
@@ -129,7 +142,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void startPlayingTicTac() throws IOException, JSONException {
+    private void startPlaying(String game) throws IOException, JSONException {
         final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
 
         networkProvider.getRobotList(new NetworkProvider.OnResponseReceivedListener() {
@@ -149,7 +162,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             });
         } else {
             try {
-                networkProvider.startPlaying(new NetworkProvider.OnResponseReceivedListener() {
+                networkProvider.startPlaying(game, new NetworkProvider.OnResponseReceivedListener() {
 
                     @Override
                     public void onResponseReceived() {

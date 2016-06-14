@@ -213,12 +213,12 @@ public class NetworkProvider {
         listener.onResponseReceived();
     }
 
-    public void startPlaying(OnResponseReceivedListener listener) throws IOException, JSONException {
+    public void startPlaying(String game, OnResponseReceivedListener listener) throws IOException, JSONException {
 
         uuid = getRobots().get(0).getUuid();
         Log.d(TAG, "ROBOT UUID : "  + uuid);
 
-        String url = RoboService.ROBOTS_PAIR + "/" + uuid + "/games/TIC_TAC_TOE";
+        String url = RoboService.ROBOTS_PAIR + "/" + uuid + "/games/" + game;
 
         NetworkRequest request = new NetworkRequest(url, HttpMethod.GET, null, play_code);
         String response = request.execute();
