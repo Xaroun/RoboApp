@@ -1,22 +1,27 @@
 package roboniania.com.roboniania_android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
-import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 /**
@@ -24,13 +29,9 @@ import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
  */
 public class PairingRobot {
 
-    private static String pairKeyString;
+    private static final String TAG = PairingRobot.class.getSimpleName();
 
-    public String getPairKeyString() {
-        return pairKeyString;
-    }
-
-    public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage, final Handler handler) {
+    public static void showPairDialog(final Context context, final SharedPreferenceStorage userLocalStorage) {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         final EditText pairKey = new EditText(context);
@@ -43,14 +44,7 @@ public class PairingRobot {
 
         alert.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                pairKeyString = pairKey.getText().toString();
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        startPairing(context, userLocalStorage, handler);
-                    }
-                }).start();
+                checkPairKey(pairKey.getText().toString(), userLocalStorage, context);
             }
         });
 
@@ -62,31 +56,46 @@ public class PairingRobot {
         alert.show();
     }
 
-    private static void startPairing(final Context context, SharedPreferenceStorage userLocalStorage, final Handler handler) {
-        final NetworkProvider networkProvider = new NetworkProvider(context, userLocalStorage);
-        try {
-            networkProvider.pair(pairKeyString, new NetworkProvider.OnResponseReceivedListener() {
+    public static void checkPairKey(String pairKey, SharedPreferenceStorage userLocalStorage, final Context context) {
+        Gson gson = new GsonBuilder().create();
 
-                @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-                        @Override
-                        public void run() {
-                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
-                                Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+
+        Call<Robot> call = roboService.getRobot(pairKey, userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<Robot>() {
+            @Override
+            public void onResponse(Call<Robot> call, Response<Robot> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    Robot robot = response.body();
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                    Log.d(TAG,robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
+                    Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, Integer.toString(statusCode));
+                    Log.d(TAG, "Pair-key and token doesn't match");
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+            }
+
+            @Override
+            public void onFailure(Call<Robot> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
+
 
 }

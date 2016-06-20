@@ -3,7 +3,6 @@ package roboniania.com.roboniania_android.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,20 +21,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.R;
+import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.User;
-import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
-    private Handler handler;
     private static final String TAG = AccountActivity.class.getSimpleName();
     private TextView login, password, created;
     private CardView changePassword;
@@ -56,7 +58,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
-        handler = new Handler();
         context = getApplicationContext();
 
         //INITIALIZE COMPONENTS
@@ -85,44 +86,41 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getUserData() {
-        new Thread(new Runnable() {
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<User> call = roboService.getUser(userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    User user = response.body();
+
+                    login.setText(user.getLogin());
+                    password.setText(computeStars(user.getPassword()));
+                    created.setText(user.getCreateed());
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                }
+            }
 
             @Override
-            public void run() {
-                downloadUser();
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
-        }).start();
-    }
 
-    private void downloadUser() {
-        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
-        try {
-            networkProvider.downloadUser(new NetworkProvider.OnResponseReceivedListener() {
-
-                @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
-                                User user = networkProvider.getUser();
-                                login.setText(user.getLogin());
-                                password.setText(computeStars(user.getPassword()));
-                                created.setText(user.getCreateed());
-                            } else {
-                                Log.d(TAG, "ups");
-                            }
-                        }
-                    });
-                }
-            });
-
-        } catch (IOException e) {
-            Log.d(TAG, "IO Exception.");
-        } catch (JSONException e) {
-            Log.d(TAG, "Problems with JSON.");
-        }
+        });
     }
 
     private String computeStars(String password) {
@@ -159,13 +157,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.change_button:
                 if(validatePassword(oldPass) && validatePassword(newPass)) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            startChanging(oldPass.getText().toString(), newPass.getText().toString());
-                        }
-                    }).start();
-
+                    startChanging(oldPass.getText().toString(), newPass.getText().toString());
                 } else {
                     //PASSWORD EMPTY
                 }
@@ -201,38 +193,44 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void startChanging(String oldPassword, String newPassword) {
-        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
-        try {
-            networkProvider.changePassword(oldPassword, newPassword, new NetworkProvider.OnResponseReceivedListener() {
+        Gson gson = new GsonBuilder().create();
 
-                @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-                        @Override
-                        public void run() {
-                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
-                                Toast.makeText(context, R.string.successfully_changed, Toast.LENGTH_SHORT).show();
-                                animator.setDisplayedChild(0);
-                                String changedPassword = networkProvider.getUser().getPassword();
-                                password.setText(computeStars(changedPassword));
-                                clearEditTexts();
-                                hideKeyboard();
-                            } else {
-                                animator.setDisplayedChild(1);
-                                Log.d(TAG, "Wrong password.");
-                                Toast.makeText(context, R.string.wrong_pass, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<User> call = roboService.changePassword(oldPassword, newPassword, userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    User user = response.body();
+                    Toast.makeText(context, R.string.successfully_changed, Toast.LENGTH_SHORT).show();
+                    animator.setDisplayedChild(0);
+                    password.setText(computeStars(user.getPassword()));
+                    clearEditTexts();
+                    hideKeyboard();
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                    animator.setDisplayedChild(1);
+                    Log.d(TAG, "Wrong password.");
+                    Toast.makeText(context, R.string.wrong_pass, Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
 
-        } catch (IOException e) {
-            Log.d(TAG, "IO Exception.");
-        } catch (JSONException e) {
-            Log.d(TAG, "Problems with JSON.");
-        }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void hideKeyboard() {

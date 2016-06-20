@@ -1,7 +1,6 @@
 package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,25 +11,26 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
-import android.widget.ViewAnimator;
 
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.AdapterRobotList;
-import roboniania.com.roboniania_android.adapter.RecyclerItemClickListener;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
-import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class RobotListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
@@ -43,7 +43,6 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     private Context context;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final String TAG = RobotListActivity.class.getSimpleName();
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,6 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
 
     private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
-        handler = new Handler();
         context = getApplicationContext();
 
         //SETTING UP SWIPE REFRESH LAYOUT
@@ -82,36 +80,39 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
 
 
     public void getRobotList() {
-        new Thread(new Runnable() {
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<User> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    User user = response.body();
+
+                    adapterRobotList.swap(user.getRobots());
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                }
+            }
 
             @Override
-            public void run() {
-                downloadRobotList();
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
-        }).start();
-    }
 
-    private void downloadRobotList() {
-        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
-        try {
-            networkProvider.getRobotList(new NetworkProvider.OnResponseReceivedListener() {
-                @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterRobotList.swap(networkProvider.getRobots());
-                        }
-                    });
-
-                }
-            });
-            robotsDownloaded.addAll(networkProvider.getRobots());
-        } catch (IOException e) {
-            Log.d(TAG, "IO Exception.");
-        } catch (JSONException e) {
-            Log.d(TAG, "Problems with JSON.");
-        }
+        });
     }
 
     @Override
@@ -124,7 +125,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage, handler);
+                PairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 

@@ -3,9 +3,6 @@ package roboniania.com.roboniania_android.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
-import roboniania.com.roboniania_android.api.network.NetworkProvider;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -30,7 +31,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int REGISTER_REQUEST = 1;
     private SharedPreferenceStorage userLocalStorage;
     private Context context;
-    private Handler handler;
     private static final String TAG = LoginActivity.class.getSimpleName();
     private Button loginBtn;
     private TextView signupLink;
@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void initComponents() {
         context = getApplicationContext();
-        handler = new Handler();
 
         //Initialize components
         loginBtn = (Button) findViewById(R.id.login_button);
@@ -96,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(this, R.string.account_created, Toast.LENGTH_SHORT).show();
             }
             if (resultCode == RESULT_CANCELED) {
-                Log.e("ERR", "User went back to login form.");
+                Log.d(TAG, "User went back to login form.");
             }
         }
     }
@@ -113,49 +112,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login(String email, String password) {
-        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
-        try {
-            networkProvider.login(email, password, new NetworkProvider.OnResponseReceivedListener() {
+        Gson gson = new GsonBuilder().create();
 
-                @Override
-                public void onResponseReceived() {
-                    handler.post(new Runnable() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-                        @Override
-                        public void run() {
-                            if (networkProvider.getRESPONSE_CODE() == 200 || networkProvider.getRESPONSE_CODE() == 202) {
-                                sendResultForMainActivity();
-                            } else {
-                                animator.setDisplayedChild(1);
-                                Log.d(TAG, "Wrong credentials.");
-                                Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            });
 
-        } catch (IOException e) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    animator.setDisplayedChild(1);
-                    Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "IO Exception.");
+        RoboService roboService = retrofit.create(RoboService.class);
+
+
+        Call<OAuthToken> call = roboService.getToken(email, password);
+
+        call.enqueue(new Callback<OAuthToken>() {
+            @Override
+            public void onResponse(Call<OAuthToken> call, Response<OAuthToken> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    OAuthToken accessToken = response.body();
+
+                    // Save token to shared prefernces
+                    userLocalStorage.storeAccessToken(accessToken.getAccess_token());
+                    userLocalStorage.setUserLoggedIn(true);
+
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_OK, returnIntent);
+
+                    Log.d(TAG, Integer.toString(statusCode));
+                    System.out.println("TOKEN: " + accessToken.getAccess_token());
+                    sendResultForMainActivity();
+                    finish();
+
+                } else {
+                    catchErrorCode(statusCode);
                 }
-            });
-        } catch (JSONException e) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    animator.setDisplayedChild(1);
-                    Toast.makeText(context, R.string.server_error, Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Problems with JSON.");
-                }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<OAuthToken> call, Throwable t) {
+                animator.setDisplayedChild(1);
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
+    private void catchErrorCode(int statusCode) {
+        Log.d(TAG, Integer.toString(statusCode));
+        switch(statusCode) {
+            case 401:
+                //UNAUTHORIZED
+                Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
+                animator.setDisplayedChild(1);
+                break;
+        }
+    }
 
 
 }

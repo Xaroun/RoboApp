@@ -2,7 +2,6 @@ package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,14 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.model.Game;
-import roboniania.com.roboniania_android.api.network.NetworkProvider;
+import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,11 +35,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String GAME_EXTRA_KEY = "game";
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
-    private Handler handler;
     private Button play;
     private static final String TAG = GameActivity.class.getSimpleName();
     private Context context;
     private Game game;
+    private String uuid = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
-        handler = new Handler();
         context = getApplicationContext();
 
         play = (Button) findViewById(R.id.play);
@@ -62,6 +65,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Intent i = getIntent();
         game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
+
+        getRobotUuid();
     }
 
     private void showGame(Game game) {
@@ -90,7 +95,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage, handler);
+                PairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 
@@ -99,94 +104,109 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.play:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch(game.getTitleId()) {
-                            case R.string.label_tictac:
-//                                try {
-//                                    startPlaying("TIC_TAC_TOE");
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-                                break;
-                            case R.string.label_tag:
-                                try {
-                                    startPlaying("TAG");
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case R.string.label_moving:
-                                break;
-                            case R.string.label_follower:
-                                try {
-                                    startPlaying("LINE_FOLLOWER");
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                        }
-
-                    }
-                }).start();
+                switch (game.getTitleId()) {
+                    case R.string.label_tictac:
+                        startPlaying("TIC_TAC_TOE");
+                        break;
+                    case R.string.label_tag:
+                        startPlaying("TAG");
+                        break;
+                    case R.string.label_moving:
+                        break;
+                    case R.string.label_follower:
+                        startPlaying("LINE_FOLLOWER");
+                        break;
+                }
                 break;
         }
+
     }
 
-    private void startPlaying(String game) throws IOException, JSONException {
-        final NetworkProvider networkProvider = new NetworkProvider(this, userLocalStorage);
+    private void getRobotUuid() {
+        Gson gson = new GsonBuilder().create();
 
-        networkProvider.getRobotList(new NetworkProvider.OnResponseReceivedListener() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<User> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponseReceived() {
-                // UPDATE ROBOT LIST IN NETWORK PROVIDER
-            }
-        });
+            public void onResponse(Call<User> call, Response<User> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    User user = response.body();
 
-        if (networkProvider.getRobots().isEmpty()) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, R.string.no_robots, Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "No connected robots.");
+                    if(user.getRobots().isEmpty())
+                        uuid = null;
+                    else
+                        uuid = user.getRobots().get(0).getUuid();
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                } else {
+                    uuid = null;
+                    Log.d(TAG, Integer.toString(statusCode));
                 }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    private void startPlaying(String game) {
+//        System.out.println(uuid);
+
+        if(uuid != null) {
+            Gson gson = new GsonBuilder().create();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(RoboService.ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            RoboService roboService = retrofit.create(RoboService.class);
+
+            Call<Void> call = roboService.startPlaying(uuid, game);
+
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    int statusCode = response.code();
+                    if (response.isSuccessful()) {
+
+                        Log.d(TAG, "ROBOT IS PLAYING");
+                        Toast.makeText(context, "Robot just started game.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, Integer.toString(statusCode));
+
+                    } else {
+                        Log.d(TAG, Integer.toString(statusCode));
+                        Log.d(TAG, "ERROR?");
+                        Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+                }
+
             });
         } else {
-            try {
-                networkProvider.startPlaying(game, new NetworkProvider.OnResponseReceivedListener() {
-
-                    @Override
-                    public void onResponseReceived() {
-                        handler.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                if (networkProvider.getRESPONSE_CODE() == 204) {
-                                    Log.d(TAG, "ROBOT IS PLAYING");
-                                    Toast.makeText(context, "Robot just started game.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Log.d(TAG, "UPS");
-                                }
-                            }
-                        });
-                    }
-                });
-
-            } catch (IOException e) {
-                Log.d(TAG, "IO Exception.");
-            } catch (JSONException e) {
-                Log.d(TAG, "Problems with JSON.");
-            }
+            Toast.makeText(context, R.string.no_robots, Toast.LENGTH_SHORT).show();
         }
 
     }
+
 }
+

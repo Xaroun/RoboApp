@@ -1,7 +1,6 @@
 package roboniania.com.roboniania_android.activities;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ public class EduActivity extends AppCompatActivity {
     public static final String EDU_EXTRA_KEY = "edu";
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +31,6 @@ public class EduActivity extends AppCompatActivity {
 
     private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
-        handler = new Handler();
 
         //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -68,7 +65,7 @@ public class EduActivity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage, handler);
+                PairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 

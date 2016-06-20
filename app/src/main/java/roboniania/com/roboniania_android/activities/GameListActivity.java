@@ -2,7 +2,6 @@ package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ public class GameListActivity extends AppCompatActivity {
     private List<Game> games;
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,6 @@ public class GameListActivity extends AppCompatActivity {
     private void initComponents() {
         context = getApplicationContext();
         userLocalStorage = new SharedPreferenceStorage(this);
-        handler = new Handler();
 
         initializeList();
 
@@ -132,7 +129,7 @@ public class GameListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                PairingRobot.showPairDialog(this, userLocalStorage, handler);
+                PairingRobot.showPairDialog(this, userLocalStorage);
                 return true;
         }
 
