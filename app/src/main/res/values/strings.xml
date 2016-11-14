@@ -36,5 +36,6 @@
     <string name="label_animals">ANIMALS</string>
     <string name="label_english">LEARN ENGLISH</string>
     <string name="no_robots">You have no connected robots</string>
-
+    <string name="pass_not_equal">Passwords are not equal</string>
+    <string name="fill_form_properly">Please fill form properly. Username and password should be at least 6 characters long</string>
 </resources>
