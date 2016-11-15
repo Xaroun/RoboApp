@@ -31,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
@@ -39,7 +40,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
     private static final String TAG = AccountActivity.class.getSimpleName();
-    private TextView login, password, created;
+    private TextView login, name, surname, email;
     private CardView changePassword;
     private ViewAnimator animator;
     private Button dismiss, confirmChange;
@@ -62,8 +63,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         //INITIALIZE COMPONENTS
         login = (TextView) findViewById(R.id.login);
-        password = (TextView) findViewById(R.id.password);
-        created = (TextView) findViewById(R.id.created);
+        name = (TextView) findViewById(R.id.name);
+        surname = (TextView) findViewById(R.id.surname);
+        email = (TextView) findViewById(R.id.email);
         changePassword = (CardView) findViewById(R.id.edit_button);
         changePassword.setOnClickListener(this);
         dismiss = (Button) findViewById(R.id.dismiss);
@@ -86,6 +88,23 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getUserData() {
+        Intent intent = getIntent();
+        Account myAccount = (Account) intent.getSerializableExtra("myAccount");
+        if(myAccount !=null) {
+            setUserData(myAccount);
+        } else {
+            downloadUserData();
+        }
+    }
+
+    private void setUserData(Account account) {
+        login.setText(account.getUsername());
+        name.setText(account.getName());
+        surname.setText(account.getSurname());
+        email.setText(account.getEmail());
+    }
+
+    private void downloadUserData() {
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -95,18 +114,15 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         RoboService roboService = retrofit.create(RoboService.class);
 
-        Call<User> call = roboService.getUser(userLocalStorage.getAccessToken());
+        Call<Account> call = roboService.getMyAccount(userLocalStorage.getAccessToken());
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<Account>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<Account> call, Response<Account> response) {
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
-                    User user = response.body();
-
-                    login.setText(user.getLogin());
-                    password.setText(computeStars(user.getPassword()));
-                    created.setText(user.getCreateed());
+                    Account account = response.body();
+                    setUserData(account);
 
                     Log.d(TAG, Integer.toString(statusCode));
 
@@ -116,22 +132,12 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Account> call, Throwable t) {
                 Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
 
         });
     }
-
-    private String computeStars(String password) {
-        String stars = "*";
-        int number = password.length();
-        for (int i = 1; i < number; i++) {
-            stars = "*" + stars;
-        }
-        return stars;
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -170,8 +176,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     private void showLogoutDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("Are you sure you want to logout?");
-        alert.setTitle("Signing out..");
+        alert.setMessage(R.string.logout);
+        alert.setTitle(R.string.sign_out);
 
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -212,7 +218,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     User user = response.body();
                     Toast.makeText(context, R.string.successfully_changed, Toast.LENGTH_SHORT).show();
                     animator.setDisplayedChild(0);
-                    password.setText(computeStars(user.getPassword()));
                     clearEditTexts();
                     hideKeyboard();
                     Log.d(TAG, Integer.toString(statusCode));

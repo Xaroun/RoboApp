@@ -48,7 +48,13 @@
 
 
                 <include
-                    layout="@layout/view_created"/>
+                    layout="@layout/view_name"/>
+
+                <include
+                    layout="@layout/view_surname"/>
+
+                <include
+                    layout="@layout/view_email"/>
 
                 <include
                     layout="@layout/view_login"/>

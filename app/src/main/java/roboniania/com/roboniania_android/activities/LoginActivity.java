@@ -27,7 +27,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.JwtToken;
-import roboniania.com.roboniania_android.api.model.OAuthToken;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -137,15 +136,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (response.isSuccessful()) {
                     JwtToken accessToken = response.body();
 
+                    String authToken = "Bearer " + accessToken.getAccess_token();
+
                     // Save token to shared prefernces
-                    userLocalStorage.storeAccessToken(accessToken.getAccess_token());
+                    userLocalStorage.storeAccessToken(authToken.trim());
                     userLocalStorage.setUserLoggedIn(true);
 
                     Intent returnIntent = new Intent();
                     setResult(Activity.RESULT_OK, returnIntent);
 
                     Log.d(TAG, Integer.toString(statusCode));
-                    System.out.println("TOKEN: " + accessToken.getAccess_token());
+//                    System.out.println("TOKEN: " + accessToken.getAccess_token());
                     sendResultForMainActivity();
                     finish();
 

@@ -10,10 +10,71 @@
         android:layout_height="100dp"
         android:layout_gravity="center" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
+
+        <!-- Name Label -->
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_name_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/input_name_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cardview_dark_background"
+                android:inputType="text"
+                android:hint="name"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- Surname Label -->
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_surname_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/input_surname_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cardview_dark_background"
+                android:inputType="text"
+                android:hint="surname"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+
     <!-- Email Label -->
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_email_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <EditText
+            android:id="@+id/input_email_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
+            android:inputType="textEmailAddress"
+            android:hint="email"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Login Label -->
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_login_register"
-        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">

@@ -12,7 +12,6 @@ import retrofit2.http.Query;
 import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
-import roboniania.com.roboniania_android.api.model.OAuthToken;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
@@ -32,6 +31,9 @@ public interface RoboService {
                                @Query("username") String username,
                                @Query("password") String password,
                                 @Header("Authorization") String basicAuthorization);
+    @Headers(ACCEPT_ROBOAPP)
+    @GET("accounts/me")
+    Call<Account> getMyAccount(@Header("Authorization") String oauthAuthorization);
 
     @GET("/robots")
     Call<Robot> getRobot(@Header("Pair-Key") String pairKey,

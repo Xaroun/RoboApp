@@ -1,9 +1,11 @@
 package roboniania.com.roboniania_android.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Mateusz on 13.11.2016.
  */
-public class Account {
+public class Account implements Serializable {
 
     private String id;
     private String username;

@@ -26,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
@@ -38,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button games, edu;
     private Context context;
     private static final String TAG = HomeActivity.class.getSimpleName();
+    private Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.avatar:
-                startAccountActivity();
+                startAccountActivity(account);
                 break;
             case R.id.games:
                 startGamesActivity();
@@ -98,15 +100,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         RoboService roboService = retrofit.create(RoboService.class);
 
-        Call<User> call = roboService.getUser(userLocalStorage.getAccessToken());
+        Call<Account> call = roboService.getMyAccount(userLocalStorage.getAccessToken());
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<Account>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<Account> call, Response<Account> response) {
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
-                    User user = response.body();
-                    hello.setText("Hi " + user.getLogin() + "!");
+                    account = response.body();
+                    hello.setText("Hi " + account.getName() + "!");
                     Log.d(TAG, Integer.toString(statusCode));
 
                 } else {
@@ -115,7 +117,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Account> call, Throwable t) {
                 Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
 
@@ -132,8 +134,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void startAccountActivity() {
+    private void startAccountActivity(Account account) {
         Intent intent = new Intent(this, AccountActivity.class);
+        if(!account.equals(null)) {
+            intent.putExtra("myAccount", account);
+        }
+
         startActivity(intent);
     }
 

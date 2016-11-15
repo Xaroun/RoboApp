@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private TextView loginLink;
     private Button registerBtn;
-    private EditText loginText, passwordText, confirmPasswordText;
+    private EditText nameText, surnameText, emailText, loginText, passwordText, confirmPasswordText;
     private ViewAnimator animator;
     private Context context;
 
@@ -53,6 +53,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         loginLink = (TextView) findViewById(R.id.login_link);
         loginLink.setOnClickListener(this);
 
+        nameText = (EditText) findViewById(R.id.input_name_register);
+        surnameText = (EditText) findViewById(R.id.input_surname_register);
+        emailText = (EditText) findViewById(R.id.input_email_register);
         loginText = (EditText) findViewById(R.id.input_login_register);
         passwordText = (EditText) findViewById(R.id.input_password_register);
         confirmPasswordText = (EditText) findViewById(R.id.input_password_confirm);
@@ -94,12 +97,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private NewAccount createAccountObject() {
+        String name = nameText.getText().toString();
+        String surname = surnameText.getText().toString();
+        String email = emailText.getText().toString();
         String login = loginText.getText().toString();
         String password = passwordText.getText().toString();
         String confirmPassword = confirmPasswordText.getText().toString();
 
         if(password.equals(confirmPassword)) {
-            return new NewAccount(login, password, "eee", "bbb", "aaa@koko.com");
+            return new NewAccount(login, password, name, surname, email);
         } else {
             return null;
         }

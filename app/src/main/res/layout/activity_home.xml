@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Blank"
+            android:text="Hi!"
             android:textColor="#000000"
             android:textSize="25sp"
             android:textStyle="bold" />
