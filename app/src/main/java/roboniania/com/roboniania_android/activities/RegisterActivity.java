@@ -158,6 +158,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 //FILL THE FORM PROPERLY
                 Toast.makeText(context, R.string.fill_form_properly, Toast.LENGTH_SHORT).show();
                 animator.setDisplayedChild(1);
+                break;
+            default:
+                Toast.makeText(context, R.string.server_error, Toast.LENGTH_SHORT).show();
+                animator.setDisplayedChild(1);
+                break;
         }
     }
 

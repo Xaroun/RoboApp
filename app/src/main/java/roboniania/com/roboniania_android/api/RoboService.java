@@ -8,24 +8,30 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import roboniania.com.roboniania_android.api.model.Account;
+import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
 import roboniania.com.roboniania_android.api.model.OAuthToken;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
 public interface RoboService {
-    public static final String ENDPOINT = "http://192.168.2.6:8080/api/";
-    public static final String ACCEPT = "Accept: application/vnd.roboapp.v1+json";
+    public static final String ENDPOINT = "http://192.168.2.5:8080/api/";
+    public static final String ACCEPT_ROBOAPP = "Accept: application/vnd.roboapp.v1+json";
+    public static final String ACCEPT_JSON = "Accept: application/json";
     public static final String CONTENT_TYPE = "Content-Type: application/vnd.roboapp.v1+json";
 
-    @Headers({ACCEPT, CONTENT_TYPE})
+    @Headers({ACCEPT_ROBOAPP, CONTENT_TYPE})
     @POST("accounts/register")
     Call<Account> registerUser(@Body NewAccount newAccount);
 
-    @GET("/oauth2/token")
-    Call<OAuthToken> getToken(@Header("Login") String login,
-                              @Header("Password") String password);
+    @Headers(ACCEPT_JSON)
+    @POST("oauth/token?")
+    Call<JwtToken> getJwtToken(@Query("grant_type") String grantType,
+                               @Query("username") String username,
+                               @Query("password") String password,
+                                @Header("Authorization") String basicAuthorization);
 
     @GET("/robots")
     Call<Robot> getRobot(@Header("Pair-Key") String pairKey,
