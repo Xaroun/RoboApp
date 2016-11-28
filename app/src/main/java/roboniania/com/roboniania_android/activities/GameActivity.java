@@ -1,8 +1,11 @@
 package roboniania.com.roboniania_android.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.LinkedList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +33,7 @@ import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.model.Game;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
@@ -40,6 +47,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Context context;
     private Game game;
     private String uuid = null;
+    private LinkedList<Robot> robotsList;
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +75,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
 
-        getRobotUuid();
+        //getRobotUuid();
+        downloadRobotsList();
+    }
+
+    private void downloadRobotsList() {
+        //THERE SHOULD BE ROBOTS LIST DOWNLOAD MECHANISM
+
+        robotsList = new LinkedList<>();
+
+        robotsList.add(new Robot("189.123.11.47", "EV3POZ", "f75e6a52-f84f-47b0-b1fa-c361652fd1a4"));
+        robotsList.add(new Robot("212.45.193.03", "EV3WRO", "cd96052b-261e-4e34-9237-9c5316280f83"));
+        robotsList.add(new Robot("95.112.09.178", "EV3WAR", "29c362e3-e4b8-40f8-9009-72bac396c82e"));
     }
 
     private void showGame(Game game) {
@@ -108,20 +128,74 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.play:
                 switch (game.getTitleId()) {
                     case R.string.label_tictac:
-                        startPlaying("TIC_TAC_TOE");
+//                        startPlaying("TIC_TAC_TOE");
+                        showRobotsPopupList();
                         break;
                     case R.string.label_tag:
-                        startPlaying("TAG");
+//                        startPlaying("TAG");
                         break;
                     case R.string.label_moving:
                         break;
                     case R.string.label_follower:
-                        startPlaying("LINE_FOLLOWER");
+//                        startPlaying("LINE_FOLLOWER");
                         break;
                 }
                 break;
         }
 
+    }
+
+    private void showRobotsPopupList() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(GameActivity.this);
+        builderSingle.setIcon(R.drawable.robot);
+        builderSingle.setTitle(R.string.choose_robot);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(GameActivity.this, android.R.layout.select_dialog_singlechoice);
+
+        for(Robot robot : robotsList) {
+            arrayAdapter.add(robot.getIp());
+        }
+
+        builderSingle.setNegativeButton(
+                R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(
+                arrayAdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selectedRobotIp = arrayAdapter.getItem(which);
+
+                        progress = new ProgressDialog(GameActivity.this);
+                        progress.setTitle(R.string.connecting_to_robot);
+                        progress.setMessage(selectedRobotIp);
+                        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        progress.setIndeterminate(true);
+                        progress.setProgress(0);
+                        progress.show();
+//
+//                        AlertDialog.Builder builderInner = new AlertDialog.Builder(
+//                                GameActivity.this);
+
+//                        builderInner.setMessage(selectedRobotIp);
+//                        builderInner.setTitle("Your Selected Item is");
+//                        builderInner.setPositiveButton("Ok",
+//                                new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                    }
+//                                });
+//                        builderInner.show();
+                    }
+                });
+        builderSingle.show();
     }
 
     private void getRobotUuid() {

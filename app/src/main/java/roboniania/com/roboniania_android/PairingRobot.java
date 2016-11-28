@@ -42,13 +42,13 @@ public class PairingRobot {
         alert.setView(pairKey);
 
 
-        alert.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 checkPairKey(pairKey.getText().toString(), userLocalStorage, context);
             }
         });
 
-        alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
             }
         });

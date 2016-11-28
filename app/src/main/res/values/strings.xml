@@ -40,4 +40,8 @@
     <string name="fill_form_properly">Please fill form properly. Username and password should be at least 8 characters long</string>
     <string name="logout">Are you sure you want to logout?</string>
     <string name="sign_out">Signing out..</string>
+    <string name="choose_robot">Choose robot..</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="connecting_to_robot">Connecting to robot...</string>
 </resources>
