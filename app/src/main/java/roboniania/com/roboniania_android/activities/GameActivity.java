@@ -48,7 +48,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Game game;
     private String uuid = null;
     private LinkedList<Robot> robotsList;
-    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,15 +170,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String selectedRobotIp = arrayAdapter.getItem(which);
-
-                        progress = new ProgressDialog(GameActivity.this);
-                        progress.setTitle(R.string.connecting_to_robot);
-                        progress.setMessage(selectedRobotIp);
-                        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        progress.setIndeterminate(true);
-                        progress.setProgress(0);
-                        progress.show();
-//
+                        dialog.dismiss();
+                        launchRingDialog(selectedRobotIp);
+//                        launchBarDialog(selectedRobotIp);
 //                        AlertDialog.Builder builderInner = new AlertDialog.Builder(
 //                                GameActivity.this);
 
@@ -197,6 +190,43 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 });
         builderSingle.show();
     }
+
+    private void launchBarDialog(String robotIp) {
+        ProgressDialog progressDialog = new ProgressDialog(GameActivity.this);
+
+        progressDialog = new ProgressDialog(GameActivity.this);
+        progressDialog.setMessage("Downloading...");
+        progressDialog.setTitle("Your Title");
+        progressDialog.setCancelable(true);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+
+//        progress.setTitle(R.string.connecting_to_robot);
+//        progress.setMessage(robotIp);
+//        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progress.setIndeterminate(true);
+//        progress.setCancelable(true);
+//        progress.show();
+    }
+
+    private void launchRingDialog(String robotIp) {
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(GameActivity.this, "Please wait ...", "Downloading Image aaa..." + robotIp, true);
+        ringProgressDialog.setCancelable(true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Here you should write your time consuming task...
+                    // Let the progress ring for 10 seconds...
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+
+                }
+                ringProgressDialog.dismiss();
+            }
+        }).start();
+    }
+
 
     private void getRobotUuid() {
         Gson gson = new GsonBuilder().create();

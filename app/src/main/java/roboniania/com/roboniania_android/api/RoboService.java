@@ -16,7 +16,7 @@ import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
 public interface RoboService {
-    public static final String ENDPOINT = "http://192.168.2.5:8080/api/";
+    public static final String ENDPOINT = "http://s396393.vm.wmi.amu.edu.pl/api/";
     public static final String ACCEPT_ROBOAPP = "Accept: application/vnd.roboapp.v1+json";
     public static final String ACCEPT_JSON = "Accept: application/json";
     public static final String CONTENT_TYPE = "Content-Type: application/vnd.roboapp.v1+json";
