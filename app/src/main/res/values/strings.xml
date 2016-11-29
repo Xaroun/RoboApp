@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RoboNiania</string>
+    <string name="app_name">RoboApp</string>
     <string name="no_account">No account yet? Create one</string>
     <string name="already_member">Already a member? Login </string>
     <string name="account_created">You have successfully created an account</string>
@@ -43,5 +43,6 @@
     <string name="choose_robot">Choose robot..</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
-    <string name="connecting_to_robot">Connecting to robot...</string>
+    <string name="creating_connection">Creating connection..</string>
+    <string name="cannot_connect">Cannot connect with this robot</string>
 </resources>

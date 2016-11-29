@@ -5,12 +5,20 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@android:color/black</item>
     </style>
 
     <style name="AppTheme.Custom">
         <item name="colorButtonNormal">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorAccent">@android:color/black</item>
     </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="colorAccent">@android:color/black</item>
+    </style>
+
 
 </resources>
