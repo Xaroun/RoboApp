@@ -215,7 +215,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                        if(progress.isShowing()) {
+                            Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
 

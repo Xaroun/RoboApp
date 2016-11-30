@@ -12,6 +12,7 @@ import retrofit2.http.Query;
 import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
+import roboniania.com.roboniania_android.api.model.NewRobot;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
@@ -35,15 +36,13 @@ public interface RoboService {
     @GET("accounts/me")
     Call<Account> getMyAccount(@Header("Authorization") String oauthAuthorization);
 
-    @GET("/robots")
-    Call<Robot> getRobot(@Header("Pair-Key") String pairKey,
-                         @Header("Token") String oauthToken);
+    @GET("tinder/{pair-key}/like")
+    Call<NewRobot> getRobot(@Path("pair-key") String pairKey,
+                            @Header("Authorization") String oauthAuthorization);
+
 
     @GET("/accounts/robots")
     Call<User> getRobotsList(@Header("Token") String oauthToken);
-
-    @GET("/accounts/me")
-    Call<User> getUser(@Header("Token") String oauthToken);
 
     @PUT("/accounts/update_profile")
     Call<User> changePassword(@Header("oldPass") String oldPass,

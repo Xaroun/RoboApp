@@ -21,6 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.NewRobot;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
@@ -67,19 +68,18 @@ public class PairingRobot {
 
         RoboService roboService = retrofit.create(RoboService.class);
 
+        Call<NewRobot> call = roboService.getRobot(pairKey, userLocalStorage.getAccessToken());
 
-        Call<Robot> call = roboService.getRobot(pairKey, userLocalStorage.getAccessToken());
-
-        call.enqueue(new Callback<Robot>() {
+        call.enqueue(new Callback<NewRobot>() {
             @Override
-            public void onResponse(Call<Robot> call, Response<Robot> response) {
+            public void onResponse(Call<NewRobot> call, Response<NewRobot> response) {
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
-                    Robot robot = response.body();
+                    NewRobot robot = response.body();
 
                     Log.d(TAG, Integer.toString(statusCode));
 
-                    Log.d(TAG,robot.getIp() + " || " + robot.getSn() + " || " + robot.getUuid());
+                    Log.d(TAG,robot.getRobot_id() + " || " + robot.getSerial_number() + " || " + robot.getRobot_model());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
@@ -90,7 +90,7 @@ public class PairingRobot {
             }
 
             @Override
-            public void onFailure(Call<Robot> call, Throwable t) {
+            public void onFailure(Call<NewRobot> call, Throwable t) {
                 Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
         });
