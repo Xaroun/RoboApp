@@ -22,6 +22,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.Socket;
+import java.net.URL;
 import java.util.LinkedList;
 
 import retrofit2.Call;
@@ -208,7 +215,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 try {
                     // CONNECTING TO ROBOT
-                    Thread.sleep(10000);
+                    String url = "192.168.2.4";
+                    int port = 3456;
+//                    connectWithRobot(url);
+                    connectWithSockets(url, port);
+
+//                    Thread.sleep(10000);
                 } catch (Exception e) {
 
                 }
@@ -226,6 +238,72 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }).start();
 
+    }
+
+    private void connectWithSockets(String url, int port) {
+
+        try {
+            String sentence;
+            String modifiedSentence;
+            BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+
+            Socket clientSocket = new Socket(url, port);
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            sentence = inFromUser.readLine();
+            outToServer.writeBytes(sentence + '\n');
+            modifiedSentence = inFromServer.readLine();
+            System.out.println(modifiedSentence);
+            clientSocket.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void connectWithRobot(String url) {
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            con.setRequestMethod("POST");
+
+            String body = "{\n" +
+                    "\"game\": \"TIC_TAC_TOE\",\n" +
+                    "\"id\": \"1\",\n" +
+                    "\"command\": \"PREPARE\"\n" +
+                    "}";
+
+            //send post request
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(body);
+            wr.flush();
+            wr.close();
+
+            int responseCode = con.getResponseCode();
+
+            System.out.println("Post parameters : \n" + body);
+            System.out.println("Response Code : " + responseCode);
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            System.out.println(response.toString());
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
