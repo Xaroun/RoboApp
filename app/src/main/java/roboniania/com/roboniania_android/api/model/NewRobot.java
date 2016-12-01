@@ -17,6 +17,24 @@ public class NewRobot {
     private String creation_date;
     private String modification_date;
     private RobotConstruction current_lego_construction;
+    private String robot_ip;
+    private String last_seen;
+
+    public String getRobot_ip() {
+        return robot_ip;
+    }
+
+    public void setRobot_ip(String robot_ip) {
+        this.robot_ip = robot_ip;
+    }
+
+    public String getLast_seen() {
+        return last_seen;
+    }
+
+    public void setLast_seen(String last_seen) {
+        this.last_seen = last_seen;
+    }
 
     public String getSerial_number() {
         return serial_number;

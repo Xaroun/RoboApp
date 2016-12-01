@@ -1,5 +1,7 @@
 package roboniania.com.roboniania_android.api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -40,9 +42,9 @@ public interface RoboService {
     Call<NewRobot> getRobot(@Path("pair-key") String pairKey,
                             @Header("Authorization") String oauthAuthorization);
 
-
-    @GET("/accounts/robots")
-    Call<User> getRobotsList(@Header("Token") String oauthToken);
+    @Headers(ACCEPT_ROBOAPP)
+    @GET("accounts/robots")
+    Call<List<NewRobot>> getRobotsList(@Header("Authorization") String oauthAuthorization);
 
     @PUT("/accounts/update_profile")
     Call<User> changePassword(@Header("oldPass") String oldPass,

@@ -23,15 +23,26 @@ card_view:cardUseCompatPadding="true">
         android:text="ip"/>
 
     <TextView
-        android:id="@+id/robotSn"
+        android:id="@+id/robotModel"
         android:textSize="17sp"
         android:padding="2dip"
         android:textColor="#960000"
         android:gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="sn"/>
+        android:text="model"/>
+
+    <TextView
+        android:id="@+id/robotSystem"
+        android:textSize="17sp"
+        android:padding="2dip"
+        android:textColor="#960000"
+        android:gravity="center"
+        android:layout_weight="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="system"/>
 </LinearLayout>
 
 </android.support.v7.widget.CardView>

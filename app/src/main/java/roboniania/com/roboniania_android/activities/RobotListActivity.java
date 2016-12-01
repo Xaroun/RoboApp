@@ -29,6 +29,7 @@ import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.AdapterRobotList;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.NewRobot;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
@@ -38,7 +39,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
     private SharedPreferenceStorage userLocalStorage;
     private RecyclerView robotsList;
     private AdapterRobotList adapterRobotList;
-    private List<Robot> robotsDownloaded = new ArrayList<>();
+    private List<NewRobot> robotsDownloaded = new ArrayList<>();
     private Toolbar toolbar;
     private Context context;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -89,16 +90,16 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
 
         RoboService roboService = retrofit.create(RoboService.class);
 
-        Call<User> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
+        Call<List<NewRobot>> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<List<NewRobot>>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<List<NewRobot>> call, Response<List<NewRobot>> response) {
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
-                    User user = response.body();
+                    List<NewRobot> listOfRobots = response.body();
 
-                    adapterRobotList.swap(user.getRobots());
+                    adapterRobotList.swap(listOfRobots);
 
                     Log.d(TAG, Integer.toString(statusCode));
 
@@ -108,7 +109,7 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<List<NewRobot>> call, Throwable t) {
                 Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
             }
 

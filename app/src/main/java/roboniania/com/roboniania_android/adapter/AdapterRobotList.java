@@ -13,6 +13,7 @@ import java.util.List;
 
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.model.Game;
+import roboniania.com.roboniania_android.api.model.NewRobot;
 import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
@@ -22,14 +23,14 @@ import roboniania.com.roboniania_android.api.model.User;
 public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyViewHolder> {
 
     private LayoutInflater inflater;
-    private List<Robot> robots;
+    private List<NewRobot> robots;
 
-    public AdapterRobotList(Context context, List<Robot> robots) {
+    public AdapterRobotList(Context context, List<NewRobot> robots) {
         inflater = LayoutInflater.from(context);
         this.robots = robots;
     }
 
-    public void swap(List<Robot> robots) {
+    public void swap(List<NewRobot> robots) {
         this.robots.clear();
         this.robots.addAll(robots);
         notifyDataSetChanged();
@@ -44,9 +45,10 @@ public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Robot currentRobot = robots.get(position);
-        holder.robotIp.setText(currentRobot.getIp());
-        holder.robotSn.setText(currentRobot.getSn());
+        NewRobot currentRobot = robots.get(position);
+        holder.robotIp.setText(currentRobot.getRobot_ip());
+        holder.robotModel.setText(currentRobot.getRobot_model().toString());
+        holder.robotSystem.setText(currentRobot.getCurrent_system().toString());
 
     }
 
@@ -57,13 +59,14 @@ public class AdapterRobotList extends RecyclerView.Adapter<AdapterRobotList.MyVi
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView robotIp, robotSn, robotUuid;
+        private TextView robotIp, robotModel, robotSystem;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
             robotIp = (TextView) itemView.findViewById(R.id.robotIp);
-            robotSn = (TextView) itemView.findViewById(R.id.robotSn);
+            robotModel = (TextView) itemView.findViewById(R.id.robotModel);
+            robotSystem = (TextView) itemView.findViewById(R.id.robotSystem);
         }
 
     }
