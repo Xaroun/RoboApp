@@ -56,7 +56,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Context context;
     private Game game;
     private String uuid = null;
-    private LinkedList<Robot> robotsList;
+    private List<NewRobot> robotsList;
     private ProgressDialog progress;
 
     @Override
@@ -84,18 +84,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
 
-        //getRobotUuid();
-        downloadRobotsList();
+        downloadRobotList();
     }
 
-    private void downloadRobotsList() {
-        //THERE SHOULD BE ROBOTS LIST DOWNLOAD MECHANISM
+    public void downloadRobotList() {
+        Gson gson = new GsonBuilder().create();
 
-        robotsList = new LinkedList<>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-        robotsList.add(new Robot("189.123.11.47", "EV3POZ", "f75e6a52-f84f-47b0-b1fa-c361652fd1a4"));
-        robotsList.add(new Robot("212.45.193.03", "EV3WRO", "cd96052b-261e-4e34-9237-9c5316280f83"));
-        robotsList.add(new Robot("95.112.09.178", "EV3WAR", "29c362e3-e4b8-40f8-9009-72bac396c82e"));
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<List<NewRobot>> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
+
+        call.enqueue(new Callback<List<NewRobot>>() {
+            @Override
+            public void onResponse(Call<List<NewRobot>> call, Response<List<NewRobot>> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    robotsList = response.body();
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NewRobot>> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void showGame(Game game) {
@@ -142,11 +165,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.string.label_tag:
 //                        startPlaying("TAG");
+                        showRobotsPopupList();
                         break;
                     case R.string.label_moving:
                         break;
                     case R.string.label_follower:
 //                        startPlaying("LINE_FOLLOWER");
+                        showRobotsPopupList();
                         break;
                 }
                 break;
@@ -158,11 +183,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(GameActivity.this);
         builderSingle.setIcon(R.drawable.robot);
         builderSingle.setTitle(R.string.choose_robot);
+        builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(GameActivity.this, android.R.layout.select_dialog_singlechoice);
 
-        for(Robot robot : robotsList) {
-            arrayAdapter.add(robot.getIp());
+        for(NewRobot robot : robotsList) {
+            arrayAdapter.add(robot.getRobot_ip());
         }
 
         builderSingle.setNegativeButton(
@@ -173,6 +199,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         dialog.dismiss();
                     }
                 });
+
+        if(arrayAdapter.isEmpty()) {
+            builderSingle.setMessage("You need to pair any robot with your account first.");
+        }
 
         builderSingle.setAdapter(
                 arrayAdapter,
