@@ -86,11 +86,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         Intent i = getIntent();
         game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
-
-        downloadRobotList();
     }
 
-    public void downloadRobotList() {
+    public void downloadRobotList(final String gameCode) {
+
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -108,6 +107,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
                     robotsList = response.body();
+                    showRobotsPopupList(gameCode);
 
                     Log.d(TAG, Integer.toString(statusCode));
 
@@ -163,15 +163,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.play:
                 switch (game.getTitleId()) {
                     case R.string.label_tictac:
-                        showRobotsPopupList("TIC_TAC_TOE");
+                        downloadRobotList("TIC_TAC_TOE");
                         break;
                     case R.string.label_tag:
-                        showRobotsPopupList("TAG");
+                        downloadRobotList("TAG");
                         break;
                     case R.string.label_moving:
                         break;
                     case R.string.label_follower:
-                        showRobotsPopupList("LINE_FOLLOWER");
+                        downloadRobotList("LINE_FOLLOWER");
                         break;
                 }
                 break;
@@ -251,6 +251,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     int port = 3456;
                     connectToRobot(robotIp, port, gameCode);
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(progress.isShowing()) {
+                                Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
                 } catch (Exception e) {
                     e.printStackTrace();
 
@@ -264,17 +274,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                 }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(progress.isShowing()) {
-                            Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-
                 progress.dismiss();
             }
         }).start();
