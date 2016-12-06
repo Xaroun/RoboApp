@@ -24,9 +24,12 @@ import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.LinkedList;
@@ -160,18 +163,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.play:
                 switch (game.getTitleId()) {
                     case R.string.label_tictac:
-//                        startPlaying("TIC_TAC_TOE");
-                        showRobotsPopupList();
+                        showRobotsPopupList("TIC_TAC_TOE");
                         break;
                     case R.string.label_tag:
-//                        startPlaying("TAG");
-                        showRobotsPopupList();
+                        showRobotsPopupList("TAG");
                         break;
                     case R.string.label_moving:
                         break;
                     case R.string.label_follower:
-//                        startPlaying("LINE_FOLLOWER");
-                        showRobotsPopupList();
+                        showRobotsPopupList("LINE_FOLLOWER");
                         break;
                 }
                 break;
@@ -179,7 +179,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void showRobotsPopupList() {
+    private void showRobotsPopupList(final String gameCode) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(GameActivity.this);
         builderSingle.setIcon(R.drawable.robot);
         builderSingle.setTitle(R.string.choose_robot);
@@ -210,7 +210,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String selectedRobotIp = arrayAdapter.getItem(which);
-                        launchProgressDialog(selectedRobotIp);
+                        launchProgressDialog(selectedRobotIp, gameCode);
 
 //                        AlertDialog.Builder builderInner = new AlertDialog.Builder(
 //                                GameActivity.this);
@@ -230,7 +230,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         builderSingle.show();
     }
 
-    private void launchProgressDialog(String robotIp) {
+    private void launchProgressDialog(final String robotIp, final String gameCode) {
         progress = new ProgressDialog(GameActivity.this, R.style.AppTheme_Dialog);
 
         progress.setTitle(R.string.creating_connection);
@@ -247,20 +247,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 try {
                     // CONNECTING TO ROBOT
-                    String url = "192.168.2.4";
+//                    String url = "192.168.2.4";
                     int port = 3456;
-//                    connectWithRobot(url);
-                    connectWithSockets(url, port);
+                    connectToRobot(robotIp, port, gameCode);
 
-//                    Thread.sleep(10000);
                 } catch (Exception e) {
+                    e.printStackTrace();
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(progress.isShowing()) {
+                                Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
                 }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if(progress.isShowing()) {
-                            Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -269,114 +278,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 progress.dismiss();
             }
         }).start();
-
     }
 
-    private void connectWithSockets(String url, int port) {
-
-        try {
-            String sentence;
-            String modifiedSentence;
-            BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-
-            Socket clientSocket = new Socket(url, port);
-            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            sentence = inFromUser.readLine();
-            outToServer.writeBytes(sentence + '\n');
-            modifiedSentence = inFromServer.readLine();
-            System.out.println(modifiedSentence);
-            clientSocket.close();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void connectWithRobot(String url) {
-        try {
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            con.setRequestMethod("POST");
-
-            String body = "{\n" +
-                    "\"game\": \"TIC_TAC_TOE\",\n" +
-                    "\"id\": \"1\",\n" +
-                    "\"command\": \"PREPARE\"\n" +
-                    "}";
-
-            //send post request
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(body);
-            wr.flush();
-            wr.close();
-
-            int responseCode = con.getResponseCode();
-
-            System.out.println("Post parameters : \n" + body);
-            System.out.println("Response Code : " + responseCode);
-
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            System.out.println(response.toString());
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void getRobotUuid() {
-        Gson gson = new GsonBuilder().create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RoboService.ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RoboService roboService = retrofit.create(RoboService.class);
-
-        Call<List<NewRobot>> call = roboService.getRobotsList(userLocalStorage.getAccessToken());
-
-        call.enqueue(new Callback<List<NewRobot>>() {
-            @Override
-            public void onResponse(Call<List<NewRobot>> call, Response<List<NewRobot>> response) {
-                int statusCode = response.code();
-                if (response.isSuccessful()) {
-                    List<NewRobot> robotsList = response.body();
-
-                    if(robotsList.isEmpty())
-                        uuid = null;
-                    else
-                        uuid = robotsList.get(0).getSerial_number();
-
-                    Log.d(TAG, Integer.toString(statusCode));
-
-                } else {
-                    uuid = null;
-                    Log.d(TAG, Integer.toString(statusCode));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<NewRobot>> call, Throwable t) {
-                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
-            }
-
-        });
+    private void connectToRobot(String robotIp, int port, String gameCode) throws IOException{
+        System.out.println("Connecting to " + robotIp + " on port " + port);
+        Socket client = new Socket();
+        client.connect(new InetSocketAddress(robotIp, port), 10000);
+        System.out.println("Sending " + gameCode + " request" + client.getRemoteSocketAddress());
+        OutputStream outToServer = client.getOutputStream();
+        DataOutputStream out = new DataOutputStream(outToServer);
+        out.writeUTF(gameCode);
+        client.close();
     }
 
     private void startPlaying(String game) {

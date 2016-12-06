@@ -45,4 +45,5 @@
     <string name="cancel">Cancel</string>
     <string name="creating_connection">Creating connection..</string>
     <string name="cannot_connect">Cannot connect with this robot</string>
+    <string name="started_game">Robot just started game</string>
 </resources>
