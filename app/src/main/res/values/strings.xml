@@ -53,4 +53,7 @@
     <string name="stopped_game">Game has been stopped</string>
     <string name="stop">STOP</string>
     <string name="stopping">Stopping..</string>
+    <string name="completed">Task has been completed</string>
+    <string name="downloaded_game">Game has been downloaded</string>
+    <string name="no_transaction">There is no transaction with this id</string>
 </resources>

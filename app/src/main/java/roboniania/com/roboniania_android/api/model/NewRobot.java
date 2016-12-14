@@ -100,5 +100,9 @@ public class NewRobot {
         this.current_lego_construction = current_lego_construction;
     }
 
+    @Override
+    public String toString() {
+        return getRobot_ip();
+    }
 }
 

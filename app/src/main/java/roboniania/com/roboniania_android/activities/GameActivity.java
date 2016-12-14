@@ -24,7 +24,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -39,7 +39,10 @@ import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.NewGame;
+import roboniania.com.roboniania_android.api.model.NewJob;
 import roboniania.com.roboniania_android.api.model.NewRobot;
+import roboniania.com.roboniania_android.api.model.NewTransaction;
+import roboniania.com.roboniania_android.api.model.Transaction;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -54,8 +57,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private String uuid = null;
     private List<NewRobot> robotsList;
     private ProgressDialog progress;
-    private String robotIp, gameCode;
-    private int port;
+    private String robotId, gameId, robotIp, transactionId;
+    private static final int port = 3456;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +90,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent i = getIntent();
         game = (NewGame) i.getExtras().getSerializable(GAME_EXTRA_KEY);
+        this.gameId = game.getId();
         showGame(game);
     }
 
-    public void downloadRobotList(final String gameCode) {
+    public void downloadRobotList() {
 
-        this.gameCode = gameCode;
         Gson gson = new GsonBuilder().create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -109,7 +113,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
                     robotsList = response.body();
-                    showRobotsPopupList(gameCode);
+                    showRobotsPopupList();
 
                     Log.d(TAG, Integer.toString(statusCode));
 
@@ -163,22 +167,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start:
-//                switch (game.getName()) {
-                    downloadRobotList(game.getName());
-//                    case R.string.label_tictac:
-//                        downloadRobotList("TIC_TAC_TOE");
-//                        break;
-//                    case R.string.label_tag:
-//                        downloadRobotList("TAG");
-//                        break;
-//                    case R.string.label_moving:
-//                        break;
-//                    case R.string.label_follower:
-//                        downloadRobotList("LINE_FOLLOWER");
-//                        break;
-//                }
-//                break;
-
+                downloadRobotList();
+                break;
             case R.id.play:
                 new Thread(new Runnable() {
                     @Override
@@ -211,25 +201,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
-            OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
-            out.writeUTF("STOP");
-            DataInputStream in = new DataInputStream(client.getInputStream());
-            String response = in.readUTF();
-            System.out.println(response);
-            client.close();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    play.setVisibility(View.VISIBLE);
-                    play.setEnabled(true);
-                    stop.setVisibility(View.GONE);
-                    stop.setEnabled(false);
-                    Toast.makeText(context, R.string.stopped_game, Toast.LENGTH_SHORT).show();
-                    progress.dismiss();
-                }
-            });
+            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
+            outToServer.writeObject(new NewJob(transactionId, "ABORTED"));
+
+            DataInputStream in = new DataInputStream(client.getInputStream());
+
+            int responseCode = in.readInt();
+            switch(responseCode) {
+                case 200:
+                    startPolling();
+                    break;
+                case 404:
+                case 400:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+            }
+            client.close();
+            System.out.println(responseCode);
         } catch(Exception e) {
             e.printStackTrace();
 
@@ -254,17 +248,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         progress.show();
     }
 
-    private void showRobotsPopupList(final String gameCode) {
+    private void showRobotsPopupList() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(GameActivity.this);
         builderSingle.setIcon(R.drawable.robot);
         builderSingle.setTitle(R.string.choose_robot);
         builderSingle.setCancelable(false);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(GameActivity.this, android.R.layout.select_dialog_singlechoice);
-
-        for(NewRobot robot : robotsList) {
-            arrayAdapter.add(robot.getRobot_ip());
-        }
+        final ArrayAdapter<NewRobot> arrayAdapter = new ArrayAdapter<>(GameActivity.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.addAll(robotsList);
 
         builderSingle.setNegativeButton(
                 R.string.cancel,
@@ -284,17 +275,203 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String selectedRobotIp = arrayAdapter.getItem(which);
-                        robotIp = selectedRobotIp;
-                        launchProgressDialog(robotIp, gameCode);
+                        robotIp = arrayAdapter.getItem(which).getRobot_ip();
+                        robotId = arrayAdapter.getItem(which).getRobot_id();
+                        sendTransactionRequest(robotId, gameId);
+                        launchProgressDialog();
                     }
                 });
         builderSingle.show();
     }
 
-    private void launchProgressDialog(final String robotIp, final String gameCode) {
-        progress = new ProgressDialog(GameActivity.this, R.style.AppTheme_Dialog);
+    private void sendTransactionRequest(String robotId, String gameId) {
+        NewTransaction newTransaction = new NewTransaction(robotId, gameId);
 
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(RoboService.ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        System.out.println(robotId + " " + gameId);
+
+        Call<Transaction> call = roboService.createGameTransaction(userLocalStorage.getAccessToken(), newTransaction);
+
+        call.enqueue(new Callback<Transaction>() {
+            @Override
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    Transaction transaction = response.body();
+
+                    sendTransactionToRobot(transaction, robotIp);
+
+                    Log.d(TAG, Integer.toString(statusCode));
+                } else {
+                    progress.dismiss();
+                    Log.d(TAG, Integer.toString(statusCode));
+                    Toast.makeText(context, R.string.no_transaction, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Transaction> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    private void sendTransactionToRobot(Transaction transaction, String robotIp) {
+        try {
+            Socket client = new Socket();
+            client.connect(new InetSocketAddress(robotIp, port), 10000);
+            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
+            outToServer.writeObject(transaction);
+
+            DataInputStream in = new DataInputStream(client.getInputStream());
+            int responseCode = in.readInt();
+            switch(responseCode) {
+                case 200:
+                    transactionId = transaction.getTransaction_id();
+                    startPolling();
+                    break;
+                case 404:
+                case 400:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    break;
+            }
+            client.close();
+            System.out.println(responseCode);
+        } catch(Exception e) {
+            e.printStackTrace();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void startPolling() throws InterruptedException {
+        counter = 0;
+        while(counter < 10) {
+            Gson gson = new GsonBuilder().create();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(RoboService.ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            RoboService roboService = retrofit.create(RoboService.class);
+
+            Call<Transaction> call = roboService.checkTransactionStatus(userLocalStorage.getAccessToken(), transactionId);
+
+            call.enqueue(new Callback<Transaction>() {
+                @Override
+                public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                    int statusCode = response.code();
+                    if (response.isSuccessful()) {
+                        Transaction transaction = response.body();
+
+                        handleStatus(transaction);
+
+                        Log.d(TAG, Integer.toString(statusCode));
+                    } else {
+                        Log.d(TAG, Integer.toString(statusCode));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Transaction> call, Throwable t) {
+                    Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+                }
+
+            });
+            Thread.sleep(5000);
+        }
+
+    }
+
+    private void handleStatus(Transaction transaction) {
+        String status = transaction.getStatus();
+        switch(status) {
+            case "DOWNLOADING":
+                progress.setTitle(R.string.download);
+                progress.setMessage("Downloading game..");
+                start.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                break;
+            case "READY":
+                Toast.makeText(context, R.string.downloaded_game, Toast.LENGTH_SHORT).show();
+                start.setVisibility(View.GONE);
+                start.setEnabled(false);
+                play.setVisibility(View.VISIBLE);
+                play.setEnabled(true);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                progress.dismiss();
+                counter = 10;
+                break;
+            case "PLAYING":
+                Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
+                start.setVisibility(View.GONE);
+                start.setEnabled(false);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
+                stop.setVisibility(View.VISIBLE);
+                stop.setEnabled(true);
+                break;
+            case "COMPLETED":
+                Toast.makeText(context, R.string.completed, Toast.LENGTH_SHORT).show();
+                start.setVisibility(View.GONE);
+                start.setEnabled(false);
+                play.setVisibility(View.VISIBLE);
+                play.setEnabled(true);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                counter = 10;
+                break;
+            case "ERROR":
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+                start.setVisibility(View.GONE);
+                start.setEnabled(false);
+                play.setVisibility(View.VISIBLE);
+                play.setEnabled(true);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                counter = 10;
+                break;
+            case "ABORTED":
+                Toast.makeText(context, R.string.stopped_game, Toast.LENGTH_SHORT).show();
+                start.setVisibility(View.GONE);
+                start.setEnabled(false);
+                play.setVisibility(View.VISIBLE);
+                play.setEnabled(true);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                counter = 10;
+        }
+    }
+
+
+    private void launchProgressDialog() {
+        progress = new ProgressDialog(GameActivity.this, R.style.AppTheme_Dialog);
         progress.setTitle(R.string.creating_connection);
         progress.setMessage("Trying to connect with " + robotIp);
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -303,98 +480,35 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         progress.setIndeterminate(true);
         progress.setCancelable(true);
         progress.show();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // CONNECTING TO ROBOT
-                    port = 3456;
-                    startPolling(robotIp, port, gameCode);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(progress.isShowing()) {
-                                Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
-                                progress.dismiss();
-                            }
-
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
-    private void startPolling(String robotIp, int port, String gameCode) throws IOException, InterruptedException {
-        boolean flag = true;
-        while(flag) {
-            Socket client = new Socket();
-            client.connect(new InetSocketAddress(robotIp, port), 10000);
-            OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
-            out.writeUTF(gameCode);
-
-            DataInputStream in = new DataInputStream(client.getInputStream());
-            String response = in.readUTF();
-            switch (response) {
-                case "DOWNLOADING":
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progress.setTitle(R.string.download);
-                            progress.setMessage("Downloading game.. ");
-                        }
-                    });
-
-                    break;
-                case "READY":
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progress.dismiss();
-                            Toast.makeText(context, R.string.game_is_ready, Toast.LENGTH_SHORT).show();
-                            start.setVisibility(View.GONE);
-                            start.setEnabled(false);
-                            play.setVisibility(View.VISIBLE);
-                            play.setEnabled(true);
-                        }
-                    });
-                    flag = false;
-                    break;
-            }
-
-            client.close();
-        }
-
     }
 
     private void startPlaying() {
         try {
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
-            OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
-            out.writeUTF(gameCode);
+
+            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
+            outToServer.writeObject(new NewJob(transactionId, "START"));
+
             DataInputStream in = new DataInputStream(client.getInputStream());
-            String response = in.readUTF();
-            System.out.println(response);
+            int responseCode = in.readInt();
+            switch (responseCode) {
+                case 200:
+                    startPolling();
+                    break;
+                case 404:
+                case 400:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+            }
+            System.out.println(responseCode);
             client.close();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    play.setVisibility(View.GONE);
-                    play.setEnabled(false);
-                    stop.setVisibility(View.VISIBLE);
-                    stop.setEnabled(true);
-                    Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
-                }
-            });
         } catch(Exception e) {
             e.printStackTrace();
 

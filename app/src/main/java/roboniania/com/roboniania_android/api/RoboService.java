@@ -16,6 +16,8 @@ import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
 import roboniania.com.roboniania_android.api.model.NewRobot;
+import roboniania.com.roboniania_android.api.model.NewTransaction;
+import roboniania.com.roboniania_android.api.model.Transaction;
 import roboniania.com.roboniania_android.api.model.User;
 
 public interface RoboService {
@@ -48,6 +50,14 @@ public interface RoboService {
 
     @GET("games/EV3")
     Call<List<NewGame>> getGamesList();
+
+    @Headers({ACCEPT_ROBOAPP, CONTENT_TYPE})
+    @POST("games/transactions")
+    Call<Transaction> createGameTransaction(@Header("Authorization") String oauthAuthorization, @Body NewTransaction newTransaction);
+
+    @Headers({ACCEPT_ROBOAPP, CONTENT_TYPE})
+    @GET("games/transactions/{transaction_id}")
+    Call<Transaction> checkTransactionStatus(@Header("Authorization") String oauthAuthorization, @Path("transaction_id") String transactionId);
 
 
     @PUT("/accounts/update_profile")
