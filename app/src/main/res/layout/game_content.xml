@@ -79,18 +79,38 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:padding="28dp"
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/start"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="@string/start"/>
+
+        <Button
             android:id="@+id/play"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:visibility="invisible"
+            android:enabled="false"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:theme="@style/Play.Button"
             android:text="@string/play"/>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="invisible"
+            android:enabled="false"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:theme="@style/Stop.Button"
+            android:text="@string/stop"/>
+
+    </RelativeLayout>
 
 
 
