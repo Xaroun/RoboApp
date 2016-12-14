@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import roboniania.com.roboniania_android.R;
-import roboniania.com.roboniania_android.adapter.model.Game;
+import roboniania.com.roboniania_android.api.model.NewGame;
 
 /**
  * Created by Mateusz on 03.05.2016.
@@ -20,9 +20,9 @@ import roboniania.com.roboniania_android.adapter.model.Game;
 public class AdapterGameList extends RecyclerView.Adapter<AdapterGameList.MyViewHolder> {
 
     private LayoutInflater inflater;
-    private List<Game> games = Collections.emptyList();
+    private List<NewGame> games = Collections.emptyList();
 
-    public AdapterGameList(Context context, List<Game> games) {
+    public AdapterGameList(Context context, List<NewGame> games) {
         inflater = LayoutInflater.from(context);
         this.games = games;
     }
@@ -36,8 +36,8 @@ public class AdapterGameList extends RecyclerView.Adapter<AdapterGameList.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Game currentGame = games.get(position);
-        holder.gameTitle.setText(currentGame.getTitleId());
+        NewGame currentGame = games.get(position);
+        holder.gameTitle.setText(currentGame.getName());
         holder.gamePic.setImageResource(currentGame.getIconId());
 
     }

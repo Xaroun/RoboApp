@@ -8,18 +8,28 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.AdapterGameList;
 import roboniania.com.roboniania_android.adapter.RecyclerItemClickListener;
-import roboniania.com.roboniania_android.adapter.model.Game;
+import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.NewGame;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class GameListActivity extends AppCompatActivity {
@@ -27,9 +37,9 @@ public class GameListActivity extends AppCompatActivity {
     private RecyclerView gamesList;
     private AdapterGameList adapterGameList;
     private Context context;
-    private List<Game> games;
     private Toolbar toolbar;
     private SharedPreferenceStorage userLocalStorage;
+    private static final String TAG = GameListActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,66 +67,89 @@ public class GameListActivity extends AppCompatActivity {
 
     private void initializeList() {
         gamesList = (RecyclerView) findViewById(R.id.recyclerList);
-        adapterGameList = new AdapterGameList(this, getGames());
-        gamesList.setAdapter(adapterGameList);
-        gamesList.setLayoutManager(new LinearLayoutManager(this));
-        gamesList.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Game game = games.get(position);
-                        startGameActivity(game);
-                    }
-                })
-        );
+        getGameList();
     }
 
-    private void startGameActivity(Game game) {
+    private void startGameActivity(NewGame game) {
         Intent i = new Intent(this, GameActivity.class);
         i.putExtra(GameActivity.GAME_EXTRA_KEY, game);
         startActivity(i);
     }
 
-    public List<Game> getGames() {
-        games = new ArrayList<>();
-        int[] icons = {
-                R.drawable.tictactoe,
-                R.drawable.smile,
-                R.drawable.moving,
-                R.drawable.follower
-        };
+    public void getGameList() {
+        Gson gson = new GsonBuilder().create();
 
-        int[] titles = {
-                R.string.label_tictac,
-                R.string.label_tag,
-                R.string.label_moving,
-                R.string.label_follower
-        };
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-        int[] descriptions = {
-                R.string.game_tictac,
-                R.string.game_tag,
-                R.string.game_moving,
-                R.string.game_follower
-        };
+        RoboService roboService = retrofit.create(RoboService.class);
 
-        int[] photos = {
-                R.drawable.tictac,
-                R.drawable.tag,
-                R.drawable.move,
-                R.drawable.linefollower
-        };
+        Call<List<NewGame>> call = roboService.getGamesList();
 
-        for (int i = 0; i < icons.length && i <titles.length; i++) {
-            Game currentGame = new Game();
-            currentGame.setIconId(icons[i]);
-            currentGame.setTitleId(titles[i]);
-            currentGame.setDescriptionId(descriptions[i]);
-            currentGame.setPhotoId(photos[i]);
-            games.add(currentGame);
-        }
+        call.enqueue(new Callback<List<NewGame>>() {
+            @Override
+            public void onResponse(Call<List<NewGame>> call, Response<List<NewGame>> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    final List<NewGame> listOfGames = response.body();
 
-        return games;
+                    int[] icons = {
+                            R.drawable.tictactoe,
+                            R.drawable.smile,
+                            R.drawable.moving,
+                            R.drawable.follower
+                    };
+
+                    int[] photos = {
+                            R.drawable.tictac,
+                            R.drawable.tag,
+                            R.drawable.move,
+                            R.drawable.linefollower
+                    };
+
+                    int i = 0;
+                    for(NewGame game : listOfGames) {
+                        if(i < 4) {
+                            game.setIconId(icons[i]);
+                            game.setPhotoId(photos[i]);
+                            i++;
+                        } else {
+                            i = 0;
+                            game.setIconId(icons[i]);
+                            game.setPhotoId(photos[i]);
+                            i++;
+                        }
+
+                    }
+
+                    Log.d(TAG, Integer.toString(statusCode));
+
+                    adapterGameList = new AdapterGameList(context, listOfGames);
+                    gamesList.setAdapter(adapterGameList);
+                    gamesList.setLayoutManager(new LinearLayoutManager(context));
+                    gamesList.addOnItemTouchListener(
+                            new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    NewGame game = listOfGames.get(position);
+                                    startGameActivity(game);
+                                }
+                            })
+                    );
+
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NewGame>> call, Throwable t) {
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     @Override

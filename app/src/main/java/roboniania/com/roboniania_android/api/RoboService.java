@@ -11,11 +11,11 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import roboniania.com.roboniania_android.api.model.NewGame;
 import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
 import roboniania.com.roboniania_android.api.model.NewRobot;
-import roboniania.com.roboniania_android.api.model.Robot;
 import roboniania.com.roboniania_android.api.model.User;
 
 public interface RoboService {
@@ -45,6 +45,10 @@ public interface RoboService {
     @Headers(ACCEPT_ROBOAPP)
     @GET("accounts/robots")
     Call<List<NewRobot>> getRobotsList(@Header("Authorization") String oauthAuthorization);
+
+    @GET("games/EV3")
+    Call<List<NewGame>> getGamesList();
+
 
     @PUT("/accounts/update_profile")
     Call<User> changePassword(@Header("oldPass") String oldPass,

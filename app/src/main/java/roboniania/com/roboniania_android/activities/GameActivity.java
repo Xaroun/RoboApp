@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,20 +22,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.URL;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,11 +37,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
-import roboniania.com.roboniania_android.adapter.model.Game;
 import roboniania.com.roboniania_android.api.RoboService;
+import roboniania.com.roboniania_android.api.model.NewGame;
 import roboniania.com.roboniania_android.api.model.NewRobot;
-import roboniania.com.roboniania_android.api.model.Robot;
-import roboniania.com.roboniania_android.api.model.User;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,7 +50,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button start, play, stop;
     private static final String TAG = GameActivity.class.getSimpleName();
     private Context context;
-    private Game game;
+    private NewGame game;
     private String uuid = null;
     private List<NewRobot> robotsList;
     private ProgressDialog progress;
@@ -95,7 +85,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent i = getIntent();
-        game = (Game) i.getExtras().getSerializable(GAME_EXTRA_KEY);
+        game = (NewGame) i.getExtras().getSerializable(GAME_EXTRA_KEY);
         showGame(game);
     }
 
@@ -136,15 +126,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void showGame(Game game) {
+    private void showGame(NewGame game) {
         TextView title = (TextView) findViewById(R.id.gameDetailTitle);
         ImageView icon = (ImageView) findViewById(R.id.gameDetailIcon);
         TextView description = (TextView) findViewById(R.id.gameDescription);
         ImageView gamePic = (ImageView) findViewById(R.id.game_pic);
 
-        title.setText(game.getTitleId());
+        title.setText(game.getName());
         icon.setImageResource(game.getIconId());
-        description.setText(game.getDescriptionId());
+        description.setText(game.getDescription());
         gamePic.setImageResource(game.getPhotoId());
     }
 
@@ -173,20 +163,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start:
-                switch (game.getTitleId()) {
-                    case R.string.label_tictac:
-                        downloadRobotList("TIC_TAC_TOE");
-                        break;
-                    case R.string.label_tag:
-                        downloadRobotList("TAG");
-                        break;
-                    case R.string.label_moving:
-                        break;
-                    case R.string.label_follower:
-                        downloadRobotList("LINE_FOLLOWER");
-                        break;
-                }
-                break;
+//                switch (game.getName()) {
+                    downloadRobotList(game.getName());
+//                    case R.string.label_tictac:
+//                        downloadRobotList("TIC_TAC_TOE");
+//                        break;
+//                    case R.string.label_tag:
+//                        downloadRobotList("TAG");
+//                        break;
+//                    case R.string.label_moving:
+//                        break;
+//                    case R.string.label_follower:
+//                        downloadRobotList("LINE_FOLLOWER");
+//                        break;
+//                }
+//                break;
 
             case R.id.play:
                 new Thread(new Runnable() {
