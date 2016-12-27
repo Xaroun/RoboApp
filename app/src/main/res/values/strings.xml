@@ -13,6 +13,7 @@
     <string name="button_games">Games</string>
     <string name="button_edu">education</string>
     <string name="my_account">My Account</string>
+    <string name="robot">Robot</string>
     <string name="games_label">Games</string>
     <string name="educations_label">Education</string>
     <string name="robots_label">Robots</string>
@@ -56,4 +57,8 @@
     <string name="completed">Task has been completed</string>
     <string name="downloaded_game">Game has been downloaded</string>
     <string name="no_transaction">There is no transaction with this id</string>
+    <string name="unpair_robot">Unpair this robot</string>
+    <string name="confirm_unpair">Are you sure you want to unpair this robot?</string>
+    <string name="unpair_title">Unpairing..</string>
+    <string name="successfully_unpaired">You have successfully unpaired this robot</string>
 </resources>

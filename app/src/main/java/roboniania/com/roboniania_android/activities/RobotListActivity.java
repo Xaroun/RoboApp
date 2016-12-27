@@ -1,6 +1,7 @@
 package roboniania.com.roboniania_android.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -28,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import roboniania.com.roboniania_android.PairingRobot;
 import roboniania.com.roboniania_android.R;
 import roboniania.com.roboniania_android.adapter.AdapterRobotList;
+import roboniania.com.roboniania_android.adapter.RecyclerItemClickListener;
 import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.NewRobot;
 import roboniania.com.roboniania_android.api.model.Robot;
@@ -77,6 +80,21 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         adapterRobotList = new AdapterRobotList(context, robotsDownloaded);
         robotsList.setAdapter(adapterRobotList);
         robotsList.setLayoutManager(new LinearLayoutManager(context));
+        robotsList.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        NewRobot robot = robotsDownloaded.get(position);
+                        startRobotActivity(robot);
+                    }
+                })
+        );
+    }
+
+    private void startRobotActivity(NewRobot robot) {
+        Intent i = new Intent(this, RobotActivity.class);
+        i.putExtra(RobotActivity.ROBOT_EXTRA_KEY, robot);
+        startActivity(i);
     }
 
 

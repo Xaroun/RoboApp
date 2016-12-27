@@ -1,9 +1,11 @@
 package roboniania.com.roboniania_android.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Mateusz on 30.11.2016.
  */
-public class Config {
+public class Config implements Serializable{
 
     private String id;
     private String requirements;

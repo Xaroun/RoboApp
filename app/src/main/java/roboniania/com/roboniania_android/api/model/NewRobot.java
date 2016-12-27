@@ -1,5 +1,7 @@
 package roboniania.com.roboniania_android.api.model;
 
+import java.io.Serializable;
+
 import roboniania.com.roboniania_android.api.enums.Constructions;
 import roboniania.com.roboniania_android.api.enums.PairingState;
 import roboniania.com.roboniania_android.api.enums.RobotSystem;
@@ -7,7 +9,7 @@ import roboniania.com.roboniania_android.api.enums.RobotSystem;
 /**
  * Created by Mateusz on 26.04.2016.
  */
-public class NewRobot {
+public class NewRobot implements Serializable{
 
     private String serial_number;
     private String robot_id;

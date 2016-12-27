@@ -1,11 +1,13 @@
 package roboniania.com.roboniania_android.api.model;
 
+import java.io.Serializable;
+
 import roboniania.com.roboniania_android.api.enums.Constructions;
 
 /**
  * Created by Mateusz on 30.11.2016.
  */
-public class RobotConstruction {
+public class RobotConstruction implements Serializable{
 
     private String id;
     private Constructions robot_model;

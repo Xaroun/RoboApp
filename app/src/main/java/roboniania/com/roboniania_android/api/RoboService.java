@@ -59,12 +59,17 @@ public interface RoboService {
     @GET("games/transactions/{transaction_id}")
     Call<Transaction> checkTransactionStatus(@Header("Authorization") String oauthAuthorization, @Path("transaction_id") String transactionId);
 
+    @GET("tinder/{robot-id}/unlike")
+    Call<Void> unpairRobot(@Header("Authorization") String oauthAuthorization, @Path("robot-id") String robotId);
 
+
+    @Deprecated
     @PUT("/accounts/update_profile")
     Call<User> changePassword(@Header("oldPass") String oldPass,
                        @Header("newPass") String newPass,
                        @Header("Token") String oauthToken);
 
+    @Deprecated
     @GET("/robots/{robotUUID}/games/{gameName}")
     Call<Void> startPlaying(@Path("robotUUID") String robotUuid,
                             @Path("gameName") String gameName);
