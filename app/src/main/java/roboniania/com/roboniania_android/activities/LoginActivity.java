@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signupLink = (TextView) findViewById(R.id.signup_link);
         signupLink.setOnClickListener(this);
 
-       loginText = (EditText) findViewById(R.id.input_email);
+        loginText = (EditText) findViewById(R.id.input_email);
         passwordText = (EditText) findViewById(R.id.input_password);
 
         animator = (ViewAnimator) findViewById(R.id.animator);
@@ -142,13 +142,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     userLocalStorage.storeAccessToken(authToken.trim());
                     userLocalStorage.setUserLoggedIn(true);
 
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK, returnIntent);
-
                     Log.d(TAG, Integer.toString(statusCode));
-//                    System.out.println("TOKEN: " + accessToken.getAccess_token());
-                    sendResultForMainActivity();
-                    finish();
+
+                    if(getCallingActivity() == null) {
+                        startHomeActivity();
+                    } else {
+                        sendResultForMainActivity();
+                    }
 
                 } else {
                     catchErrorCode(statusCode);
@@ -162,6 +162,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
         });
+    }
+
+    private void startHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private String prepareAuthorizationHeader() {

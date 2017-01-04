@@ -322,7 +322,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     progress.dismiss();
                     Log.d(TAG, Integer.toString(statusCode));
-                    Toast.makeText(context, R.string.no_transaction, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.error_with_starting, Toast.LENGTH_SHORT).show();
                 }
             }
 
