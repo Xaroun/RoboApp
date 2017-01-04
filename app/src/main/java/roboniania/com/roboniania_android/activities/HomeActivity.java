@@ -113,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                 } else {
                     Log.d(TAG, Integer.toString(statusCode));
+                    goBackToLoginActivity();
                 }
             }
 
@@ -122,6 +123,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         });
+    }
+
+    private void goBackToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void startEduActivity() {
