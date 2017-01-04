@@ -314,15 +314,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
                 int statusCode = response.code();
                 if (response.isSuccessful()) {
-                    Transaction transaction = response.body();
+                    final Transaction transaction = response.body();
 
-                    sendTransactionToRobot(transaction, robotIp);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendTransactionToRobot(transaction, robotIp);
+                        }
+                    }).start();
 
                     Log.d(TAG, Integer.toString(statusCode));
                 } else {
                     progress.dismiss();
                     Log.d(TAG, Integer.toString(statusCode));
-                    Toast.makeText(context, R.string.error_with_starting, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.robot_is_busy, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -353,6 +358,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progress.dismiss();
                             Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -367,6 +373,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    progress.dismiss();
                     Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -408,13 +415,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             });
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         }
+        progress.dismiss();
+        Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
 
     }
 
     private void handleStatus(Transaction transaction) {
         String status = transaction.getStatus();
+        System.out.println(status);
         switch(status) {
             case "DOWNLOADING":
                 progress.setTitle(R.string.download);
@@ -425,6 +435,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
+                counter++;
+                break;
+            case "NEW":
+                progress.setTitle(R.string.waiting);
+                progress.setMessage("Waiting for robot..");
+                start.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
+                stop.setVisibility(View.GONE);
+                stop.setEnabled(false);
+                counter++;
                 break;
             case "READY":
                 Toast.makeText(context, R.string.downloaded_game, Toast.LENGTH_SHORT).show();
@@ -466,7 +488,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 stop.setEnabled(false);
                 counter = 10;
                 break;
-            case "ABORTED":
+            case "ARCHIVED":
                 Toast.makeText(context, R.string.stopped_game, Toast.LENGTH_SHORT).show();
                 start.setVisibility(View.GONE);
                 start.setEnabled(false);

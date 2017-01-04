@@ -56,9 +56,10 @@
     <string name="stopping">Stopping..</string>
     <string name="completed">Task has been completed</string>
     <string name="downloaded_game">Game has been downloaded</string>
-    <string name="error_with_starting">Error with starting game on robot</string>
+    <string name="robot_is_busy">Robot currently is busy</string>
     <string name="unpair_robot">Unpair this robot</string>
     <string name="confirm_unpair">Are you sure you want to unpair this robot?</string>
     <string name="unpair_title">Unpairing..</string>
     <string name="successfully_unpaired">You have successfully unpaired this robot</string>
+    <string name="waiting">Waiting..</string>
 </resources>
