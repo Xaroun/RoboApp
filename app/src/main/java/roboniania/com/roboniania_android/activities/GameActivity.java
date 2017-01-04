@@ -135,11 +135,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         ImageView icon = (ImageView) findViewById(R.id.gameDetailIcon);
         TextView description = (TextView) findViewById(R.id.gameDescription);
         ImageView gamePic = (ImageView) findViewById(R.id.game_pic);
+        TextView version = (TextView) findViewById(R.id.version);
+        TextView model = (TextView) findViewById(R.id.neededModel);
+        TextView system = (TextView) findViewById(R.id.system);
+        TextView author = (TextView) findViewById(R.id.author);
 
         title.setText(game.getName());
         icon.setImageResource(game.getIconId());
         description.setText(game.getDescription());
         gamePic.setImageResource(game.getPhotoId());
+
+        version.setText(game.getVersion());
+        model.setText(game.getRobot_model());
+        system.setText(game.getRobot_system());
+        author.setText(game.getAuthor());
     }
 
 

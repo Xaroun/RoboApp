@@ -18,15 +18,16 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Size:"
+                android:text="Version:"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
             <TextView
+                android:id="@+id/version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5MB"
+                android:text="1.0.0"
                 android:layout_weight="1"
                 android:textSize="12sp"/>
 
@@ -41,15 +42,16 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rating:"
+                android:text="Model:"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
             <TextView
+                android:id="@+id/neededModel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5/5"
+                android:text="EV3"
                 android:layout_weight="1"
                 android:textSize="12sp"/>
 
@@ -63,12 +65,36 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Producer:"
+                android:text="System:"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/system"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LEJOS"
+                android:layout_weight="1"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Author:"
                 android:textStyle="bold"
                 android:layout_weight="1"
                 android:textSize="12sp"/>
 
             <TextView
+                android:id="@+id/author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RoboDev"
@@ -81,7 +107,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="28dp"
+        android:padding="20dp"
         android:layout_height="wrap_content">
 
         <Button
