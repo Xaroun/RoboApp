@@ -343,8 +343,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         try {
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
-            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
-            outToServer.writeObject(transaction);
+            DataOutputStream outToServer = new DataOutputStream(client.getOutputStream());
+
+            String rawJSON = "{\n" +
+                    "\"transaction_id\": \"" + transaction.getTransaction_id() + "\",\n" +
+                    "\"status\": \"" + transaction.getStatus() + "\",\n" +
+                    "\"account_id\": \"" + transaction.getAccount_id() + "\",\n" +
+                    "\"game_id\": \"" + transaction.getGame_id() + "\",\n" +
+                    "\"created_at\": \"" + transaction.getCreated_at()+ "\"\n" +
+                    "}";
+
+            outToServer.writeUTF(rawJSON);
 
             DataInputStream in = new DataInputStream(client.getInputStream());
             int responseCode = in.readInt();
@@ -417,8 +426,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             });
             Thread.sleep(3000);
         }
-        progress.dismiss();
-        Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progress.dismiss();
+                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
