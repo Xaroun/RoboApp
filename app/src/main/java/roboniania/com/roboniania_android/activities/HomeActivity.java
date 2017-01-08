@@ -62,8 +62,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         games = (Button) findViewById(R.id.games);
         games.setOnClickListener(this);
 
-        edu = (Button) findViewById(R.id.edu);
-        edu.setOnClickListener(this);
+//        edu = (Button) findViewById(R.id.edu);
+//        edu.setOnClickListener(this);
 
         //SETTING UP TOOLBAR
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -84,9 +84,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.games:
                 startGamesActivity();
                 break;
-            case R.id.edu:
-                startEduActivity();
-                break;
+//            case R.id.edu:
+//                startEduActivity();
+//                break;
         }
     }
 
@@ -133,10 +133,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void startEduActivity() {
-        Intent intent = new Intent(this, EduListActivity.class);
-        startActivity(intent);
-    }
+//    private void startEduActivity() {
+//        Intent intent = new Intent(this, EduListActivity.class);
+//        startActivity(intent);
+//    }
 
     private void startGamesActivity() {
         Intent intent = new Intent(this, GameListActivity.class);
