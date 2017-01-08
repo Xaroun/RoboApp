@@ -51,7 +51,7 @@
     <string name="download">Download..</string>
     <string name="game_is_ready">Game is ready to launch</string>
     <string name="interrupt">INTERRUPT</string>
-    <string name="stopped_game">Game has been stopped</string>
+    <string name="stopped_game">Game has been completed</string>
     <string name="stop">STOP</string>
     <string name="stopping">Stopping..</string>
     <string name="completed">Task has been completed</string>

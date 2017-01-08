@@ -211,8 +211,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
 
-            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
-            outToServer.writeObject(new NewJob(transactionId, "ABORTED"));
+            DataOutputStream outToServer = new DataOutputStream(client.getOutputStream());
+
+            String rawJSON = "{\n" +
+                    "\"transaction_id\": \"" + transactionId + "\",\n" +
+                    "\"job\": \"ABORTED\"\n" +
+                    "}";
+
+            outToServer.writeUTF(rawJSON);
 
             DataInputStream in = new DataInputStream(client.getInputStream());
 
@@ -253,7 +259,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         progress.setProgressNumberFormat(null);
         progress.setProgressPercentFormat(null);
         progress.setIndeterminate(true);
-        progress.setCancelable(false);
+        progress.setCancelable(true);
         progress.show();
     }
 
@@ -390,8 +396,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startPolling() throws InterruptedException {
-        counter = 0;
-        while(counter < 10) {
+        this.counter = 0;
+        while(this.counter < 10) {
             Gson gson = new GsonBuilder().create();
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -424,16 +430,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             });
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         }
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progress.dismiss();
-                Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 
@@ -450,7 +448,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
-                counter++;
+                this.counter++;
                 break;
             case "NEW":
                 progress.setTitle(R.string.waiting);
@@ -461,7 +459,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
-                counter++;
+                this.counter++;
                 break;
             case "READY":
                 Toast.makeText(context, R.string.downloaded_game, Toast.LENGTH_SHORT).show();
@@ -472,10 +470,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
                 progress.dismiss();
-                counter = 10;
+                this.counter = 10;
                 break;
             case "PLAYING":
-                Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
                 start.setVisibility(View.GONE);
                 start.setEnabled(false);
                 play.setVisibility(View.GONE);
@@ -485,33 +482,34 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case "COMPLETED":
                 Toast.makeText(context, R.string.completed, Toast.LENGTH_SHORT).show();
-                start.setVisibility(View.GONE);
-                start.setEnabled(false);
-                play.setVisibility(View.VISIBLE);
-                play.setEnabled(true);
+                start.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
-                counter = 10;
+                this.counter = 10;
                 break;
             case "ERROR":
                 Toast.makeText(context, R.string.check_connection, Toast.LENGTH_SHORT).show();
-                start.setVisibility(View.GONE);
-                start.setEnabled(false);
-                play.setVisibility(View.VISIBLE);
-                play.setEnabled(true);
+                start.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
-                counter = 10;
+                this.counter = 10;
                 break;
             case "ARCHIVED":
                 Toast.makeText(context, R.string.stopped_game, Toast.LENGTH_SHORT).show();
-                start.setVisibility(View.GONE);
-                start.setEnabled(false);
-                play.setVisibility(View.VISIBLE);
-                play.setEnabled(true);
+                start.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                play.setVisibility(View.GONE);
+                play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
-                counter = 10;
+                progress.dismiss();
+                this.counter = 10;
         }
     }
 
@@ -533,13 +531,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
 
-            ObjectOutputStream outToServer = new ObjectOutputStream(client.getOutputStream());
-            outToServer.writeObject(new NewJob(transactionId, "START"));
+            DataOutputStream outToServer = new DataOutputStream(client.getOutputStream());
+
+            String rawJSON = "{\n" +
+                    "\"transaction_id\": \"" + transactionId + "\",\n" +
+                    "\"job\": \"START\"\n" +
+                    "}";
+
+            outToServer.writeUTF(rawJSON);
 
             DataInputStream in = new DataInputStream(client.getInputStream());
             int responseCode = in.readInt();
             switch (responseCode) {
                 case 200:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Thread.sleep(300);
                     startPolling();
                     break;
                 case 404:
