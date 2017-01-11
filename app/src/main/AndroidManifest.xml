@@ -52,6 +52,7 @@
         </activity>
         <activity
             android:name=".activities.RobotListActivity"
+            android:launchMode="singleTop"
             android:label="@string/robots_label" />
         <activity
             android:name=".activities.AccountActivity"

@@ -57,6 +57,12 @@ public class RobotListActivity extends AppCompatActivity implements SwipeRefresh
         getRobotList();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getRobotList();
+    }
+
     private void initComponents() {
         userLocalStorage = new SharedPreferenceStorage(this);
         context = getApplicationContext();

@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Version:"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Model:"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="System:"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:text="Author:"
                 android:textStyle="bold"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:textSize="12sp"/>
 
             <TextView

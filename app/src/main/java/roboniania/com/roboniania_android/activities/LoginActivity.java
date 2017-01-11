@@ -187,6 +187,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch(statusCode) {
             case 401:
             case 400:
+            case 403:
                 //UNAUTHORIZED
                 Toast.makeText(context, R.string.wrong_credentials, Toast.LENGTH_SHORT).show();
                 animator.setDisplayedChild(1);

@@ -83,14 +83,17 @@ public class NavigationDrawerFragment extends Fragment {
             case 0:
                 i = new Intent(context, HomeActivity.class);
                 startActivity(i);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case 1:
                 i = new Intent(context, AccountActivity.class);
                 startActivity(i);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case 2:
                 i = new Intent(context, RobotListActivity.class);
                 startActivity(i);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case 3:
                 System.out.println("Settings");

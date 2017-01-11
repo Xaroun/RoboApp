@@ -78,8 +78,6 @@ public class PairingRobot {
                     NewRobot robot = response.body();
 
                     Log.d(TAG, Integer.toString(statusCode));
-
-                    Log.d(TAG,robot.getRobot_id() + " || " + robot.getSerial_number() + " || " + robot.getRobot_model());
                     Toast.makeText(context, R.string.successfully_paired, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, R.string.wrong_match, Toast.LENGTH_SHORT).show();
