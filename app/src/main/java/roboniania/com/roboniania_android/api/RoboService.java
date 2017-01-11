@@ -16,6 +16,7 @@ import roboniania.com.roboniania_android.api.model.Account;
 import roboniania.com.roboniania_android.api.model.JwtToken;
 import roboniania.com.roboniania_android.api.model.NewAccount;
 import roboniania.com.roboniania_android.api.model.NewRobot;
+import roboniania.com.roboniania_android.api.model.NewStatus;
 import roboniania.com.roboniania_android.api.model.NewTransaction;
 import roboniania.com.roboniania_android.api.model.Transaction;
 import roboniania.com.roboniania_android.api.model.User;
@@ -58,6 +59,10 @@ public interface RoboService {
     @Headers({ACCEPT_ROBOAPP, CONTENT_TYPE})
     @GET("games/transactions/{transaction_id}")
     Call<Transaction> checkTransactionStatus(@Header("Authorization") String oauthAuthorization, @Path("transaction_id") String transactionId);
+
+    @Headers({ACCEPT_ROBOAPP, CONTENT_TYPE})
+    @PUT("games/transactions/{transaction_id}")
+    Call<Void> changeTransactionStatus(@Header("X-Robot") String robotId, @Path("transaction_id") String transactionId, @Body NewStatus status);
 
     @GET("tinder/{robot-id}/unlike")
     Call<Void> unpairRobot(@Header("Authorization") String oauthAuthorization, @Path("robot-id") String robotId);

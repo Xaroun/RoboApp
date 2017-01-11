@@ -1,5 +1,6 @@
 package roboniania.com.roboniania_android.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +42,7 @@ import roboniania.com.roboniania_android.api.RoboService;
 import roboniania.com.roboniania_android.api.model.NewGame;
 import roboniania.com.roboniania_android.api.model.NewJob;
 import roboniania.com.roboniania_android.api.model.NewRobot;
+import roboniania.com.roboniania_android.api.model.NewStatus;
 import roboniania.com.roboniania_android.api.model.NewTransaction;
 import roboniania.com.roboniania_android.api.model.Transaction;
 import roboniania.com.roboniania_android.storage.SharedPreferenceStorage;
@@ -57,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private String uuid = null;
     private List<NewRobot> robotsList;
     private ProgressDialog progress;
-    private String robotId, gameId, robotIp, transactionId;
+    private String robotId, gameId, robotIp, transactionId = null;
     private static final int port = 3456;
     private int counter = 0;
 
@@ -162,7 +164,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                if(transactionId != null) {
+                    showCancelTransactionDialog();
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 return true;
             case R.id.add:
                 PairingRobot.showPairDialog(this, userLocalStorage);
@@ -170,6 +176,59 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showCancelTransactionDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Are you sure you want to cancel transaction?");
+        alert.setTitle("Cancel transaction..");
+
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cancelTransaction();
+                    }
+                }).start();
+            }
+        });
+
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
+
+        alert.create();
+        alert.show();
+    }
+
+    private void cancelTransaction() {
+        try {
+            Socket client = new Socket();
+            client.connect(new InetSocketAddress(robotIp, port), 10000);
+
+            DataOutputStream outToServer = new DataOutputStream(client.getOutputStream());
+
+            String rawJSON = "{\n" +
+                    "\"transaction_id\": \"" + transactionId + "\",\n" +
+                    "\"job\": \"ABORTED\"\n" +
+                    "}";
+
+            outToServer.writeUTF(rawJSON);
+
+            DataInputStream in = new DataInputStream(client.getInputStream());
+
+            int responseCode = in.readInt();
+
+            client.close();
+            System.out.println(responseCode);
+
+            NavUtils.navigateUpFromSameTask(this);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -259,7 +318,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         progress.setProgressNumberFormat(null);
         progress.setProgressPercentFormat(null);
         progress.setIndeterminate(true);
-        progress.setCancelable(true);
+        progress.setCancelable(false);
         progress.show();
     }
 
@@ -311,8 +370,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         RoboService roboService = retrofit.create(RoboService.class);
 
-        System.out.println(robotId + " " + gameId);
-
         Call<Transaction> call = roboService.createGameTransaction(userLocalStorage.getAccessToken(), newTransaction);
 
         call.enqueue(new Callback<Transaction>() {
@@ -346,6 +403,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendTransactionToRobot(Transaction transaction, String robotIp) {
+        transactionId = transaction.getTransaction_id();
         try {
             Socket client = new Socket();
             client.connect(new InetSocketAddress(robotIp, port), 10000);
@@ -365,7 +423,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             int responseCode = in.readInt();
             switch(responseCode) {
                 case 200:
-                    transactionId = transaction.getTransaction_id();
                     startPolling();
                     break;
                 case 404:
@@ -392,7 +449,40 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(context, R.string.cannot_connect, Toast.LENGTH_SHORT).show();
                 }
             });
+            changeTransactionStatus(robotId, transactionId, new NewStatus("COMPLETED"));
+            transactionId = null;
         }
+    }
+
+    private void changeTransactionStatus(String robotId, final String transactionId, NewStatus status) {
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RoboService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RoboService roboService = retrofit.create(RoboService.class);
+
+        Call<Void> call = roboService.changeTransactionStatus(robotId, transactionId, status);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    Log.d(TAG, Integer.toString(statusCode));
+                } else {
+                    Log.d(TAG, Integer.toString(statusCode));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+
+        });
     }
 
     private void startPolling() throws InterruptedException {
@@ -522,7 +612,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         progress.setProgressNumberFormat(null);
         progress.setProgressPercentFormat(null);
         progress.setIndeterminate(true);
-        progress.setCancelable(true);
+        progress.setCancelable(false);
         progress.show();
     }
 
