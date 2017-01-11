@@ -62,6 +62,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private String robotId, gameId, robotIp, transactionId = null;
     private static final int port = 3456;
     private int counter = 0;
+    private boolean isStarting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -552,6 +553,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 this.counter++;
                 break;
             case "READY":
+                if(isStarting) {
+                    start.setVisibility(View.GONE);
+                    start.setEnabled(false);
+                    play.setVisibility(View.GONE);
+                    play.setEnabled(false);
+                    stop.setVisibility(View.VISIBLE);
+                    stop.setEnabled(true);
+                    isStarting = false;
+                    break;
+                }
                 Toast.makeText(context, R.string.downloaded_game, Toast.LENGTH_SHORT).show();
                 start.setVisibility(View.GONE);
                 start.setEnabled(false);
@@ -578,6 +589,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 play.setEnabled(false);
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
+                transactionId = null;
                 this.counter = 10;
                 break;
             case "ERROR":
@@ -599,6 +611,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 stop.setVisibility(View.GONE);
                 stop.setEnabled(false);
                 progress.dismiss();
+                transactionId = null;
                 this.counter = 10;
         }
     }
@@ -640,7 +653,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(context, R.string.started_game, Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Thread.sleep(300);
+                    isStarting = true;
                     startPolling();
                     break;
                 case 404:

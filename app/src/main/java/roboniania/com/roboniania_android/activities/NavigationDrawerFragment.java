@@ -107,16 +107,16 @@ public class NavigationDrawerFragment extends Fragment {
         int[] icons = {
                 R.drawable.home,
                 R.drawable.account,
-                R.drawable.robot,
-                R.drawable.settings
+                R.drawable.robot/*,
+                R.drawable.settings*/
 
         };
 
         String[] titles = {
                 "Home",
                 "Account",
-                "Robots list",
-                "Settings"
+                "Robots list"/*,
+                "Settings"*/
         };
 
         for (int i = 0; i < icons.length && i <titles.length; i++) {
